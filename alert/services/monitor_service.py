@@ -1,3 +1,7 @@
+from datetime import datetime, time, timedelta
+
+from django.utils import timezone
+
 from alert.models import Monitor
 from lib import seatgeek_gateway
 
@@ -11,4 +15,13 @@ def create_monitor(seatgeek_event_id, email, amount):
         event_title=event.title,
         email=email,
         seatgeek_event_id=seatgeek_event_id
+    )
+
+
+def get_monitors_for_events_in_next_twenty_four_hours():
+    now = timezone.now()
+    twenty_four_hours_from_now = now + timedelta(days=1)
+
+    return Monitor.objects.filter(
+        datetime_event_start__range=(now, twenty_four_hours_from_now)
     )
