@@ -1,3 +1,4 @@
+import os
 from collections import namedtuple
 import datetime
 from decimal import Decimal
@@ -7,6 +8,8 @@ import requests
 
 SEATGEEK_BASE_URL = 'https://api.seatgeek.com/2/'
 SEATGEEK_DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S'
+SEATGEEK_CLIENT_ID = os.environ.get('SEATGEEK_CLIENT_ID')
+SEATGEEK_CLIENT_SECRET = os.environ.get('SEATGEEK_CLIENT_SECRET')
 
 Event = namedtuple('Event', ['id', 'title', 'datetime_utc', 'lowest_price'])
 
@@ -16,7 +19,7 @@ def get_event_by_id(event_id):
         base=SEATGEEK_BASE_URL,
         event_id=event_id
     )
-    response = requests.get(url)
+    response = requests.get(url, auth=(SEATGEEK_CLIENT_ID, SEATGEEK_CLIENT_SECRET))
     event_data = json.loads(response.text)
 
     if response.status_code != 200:
