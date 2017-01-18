@@ -3,6 +3,7 @@ from decimal import Decimal
 
 from django.test import TestCase
 from django.utils import timezone
+from freezegun import freeze_time
 
 from alert.models import Monitor
 from alert.services import monitor_service
@@ -26,15 +27,16 @@ class CreateMonitorTest(TestCase):
 class GetMonitorsForEventsStartingInNextTwentyFourHoursTest(TestCase):
 
     def test_returns_monitor_with_event_starting_now(self):
+        now = timezone.now()
         monitor = Monitor.objects.create(
             amount=Decimal('1'),
-            datetime_event_start=timezone.now(),
+            datetime_event_start=now,
             event_title='foo',
             email='foo@bar.com',
             seatgeek_event_id='123'
         )
-
-        monitors = monitor_service.get_monitors_for_events_in_next_twenty_four_hours()
+        with freeze_time(now):
+            monitors = monitor_service.get_monitors_for_events_in_next_twenty_four_hours()
 
         self.assertEqual(1, len(monitors))
         self.assertIn(monitor, monitors)
