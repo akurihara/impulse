@@ -3,6 +3,7 @@ from collections import namedtuple
 import datetime
 from decimal import Decimal
 import json
+import pytz
 
 import requests
 
@@ -31,13 +32,13 @@ def get_event_by_id(event_id):
 
 def _get_event_tuple_from_event_data(event_data):
     datetime_utc = datetime.datetime.strptime(event_data['datetime_utc'], SEATGEEK_DATETIME_FORMAT)
-    lowest_price_in_cents = Decimal(event_data['stats']['lowest_price'])
-    lowest_price = lowest_price_in_cents / 100
+    localized_datetime_utc = pytz.utc.localize(datetime_utc)
+    lowest_price = Decimal(event_data['stats']['lowest_price'])
 
     return Event(
         id=event_data['id'],
         title=event_data['short_title'],
-        datetime_utc=datetime_utc,
+        datetime_utc=localized_datetime_utc,
         lowest_price=lowest_price
     )
 
