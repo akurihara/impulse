@@ -17,11 +17,11 @@ def get_event_by_id(event_id):
         event_id=event_id
     )
     response = requests.get(url)
+    event_data = json.loads(response.text)
 
     if response.status_code != 200:
         _handle_error_response(response)
 
-    event_data = json.loads(response.text)
 
     return _get_event_tuple_from_event_data(event_data)
 
@@ -40,4 +40,5 @@ def _get_event_tuple_from_event_data(event_data):
 
 
 def _handle_error_response(response):
-    pass
+    message = 'Seatgeek API responded with {}'.format(response.status_code)
+    raise RuntimeError(message)
