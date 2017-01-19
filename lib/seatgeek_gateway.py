@@ -26,7 +26,6 @@ def get_event_by_id(event_id):
     if response.status_code != 200:
         _handle_error_response(response)
 
-
     return _get_event_tuple_from_event_data(event_data)
 
 
