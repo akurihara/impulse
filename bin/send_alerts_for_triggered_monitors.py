@@ -1,3 +1,5 @@
+import django
+django.setup()
 import os
 
 from twilio.rest import TwilioRestClient
@@ -35,6 +37,4 @@ def _load_twilio_config():
 
 
 if __name__ == "__main__":
-    import django
-    django.setup()
     main()
