@@ -14,13 +14,13 @@ class CreateMonitorTest(TestCase):
     def test_creates_new_monitor(self):
         monitor = monitor_service.create_monitor(
             seatgeek_event_id='3575009',
-            email='alex.kurihara@gmail.com',
+            phone_number='+12223334444',
             amount=Decimal('1')
         )
 
         self.assertTrue(Monitor.objects.filter(id=monitor.id).exists())
         self.assertEqual('3575009', monitor.seatgeek_event_id)
-        self.assertEqual('alex.kurihara@gmail.com', monitor.email)
+        self.assertEqual('+12223334444', monitor.phone_number.as_e164)
         self.assertEqual(Decimal('1'), monitor.amount)
 
 
@@ -32,7 +32,7 @@ class GetMonitorsForEventsStartingInNextTwentyFourHoursTest(TestCase):
             amount=Decimal('1'),
             datetime_event_start=now,
             event_title='foo',
-            email='foo@bar.com',
+            phone_number='+12223334444',
             seatgeek_event_id='123'
         )
         with freeze_time(now):
@@ -48,7 +48,7 @@ class GetMonitorsForEventsStartingInNextTwentyFourHoursTest(TestCase):
             amount=Decimal('1'),
             datetime_event_start=twenty_three_hours_from_now,
             event_title='foo',
-            email='foo@bar.com',
+            phone_number='+12223334444',
             seatgeek_event_id='123'
         )
 
@@ -64,7 +64,7 @@ class GetMonitorsForEventsStartingInNextTwentyFourHoursTest(TestCase):
             amount=Decimal('1'),
             datetime_event_start=one_second_ago,
             event_title='foo',
-            email='foo@bar.com',
+            phone_number='+12223334444',
             seatgeek_event_id='123'
         )
 
@@ -79,7 +79,7 @@ class GetMonitorsForEventsStartingInNextTwentyFourHoursTest(TestCase):
             amount=Decimal('1'),
             datetime_event_start=twenty_five_hours_from_now,
             event_title='foo',
-            email='foo@bar.com',
+            phone_number='+12223334444',
             seatgeek_event_id='123'
         )
 

@@ -5,6 +5,7 @@ import pytz
 
 from decimal import Decimal
 from django.test import TestCase
+from freezegun import freeze_time
 from twilio.rest.resources import Messages
 
 from alert.services import monitor_service
@@ -15,6 +16,7 @@ from lib.seatgeek_gateway import Event
 class MainTest(TestCase):
 
     @patch.object(Messages, 'create')
+    @freeze_time('2017-01-19 03:00:00')
     def test_sends_sms_message_if_monitor_amount_is_less_than_event_price(self, create_mock):
         mock_event = Event(
             id='3621831',
@@ -26,7 +28,7 @@ class MainTest(TestCase):
         with patch('lib.seatgeek_gateway.get_event_by_id', return_value=mock_event):
             monitor = monitor_service.create_monitor(
                 seatgeek_event_id='3621831',
-                email='alex.kurihara@gmail.com',
+                phone_number='+12223334444',
                 amount=Decimal('65.01')
             )
 
@@ -40,6 +42,7 @@ class MainTest(TestCase):
         )
 
     @patch.object(Messages, 'create')
+    @freeze_time('2017-01-19 00:00:01')
     def test_does_not_send_sms_message_if_monitor_amount_is_higher_than_event_price(self, create_mock):
         mock_event = Event(
             id='3621831',
@@ -51,7 +54,7 @@ class MainTest(TestCase):
         with patch('lib.seatgeek_gateway.get_event_by_id', return_value=mock_event):
             monitor = monitor_service.create_monitor(
                 seatgeek_event_id='3621831',
-                email='alex.kurihara@gmail.com',
+                phone_number='+12223334444',
                 amount=Decimal('64.99')
             )
 

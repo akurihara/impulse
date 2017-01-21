@@ -13,12 +13,12 @@ class MonitorsHandler(View):
     def post(self, request):
         parameters = json.loads(request.body)
         seatgeek_event_id = parameters['seatgeek_event_id']
-        email = parameters['email']
+        phone_number = parameters['phone_number']
         amount = parameters['amount']
 
         monitor = monitor_service.create_monitor(
             seatgeek_event_id=seatgeek_event_id,
-            email=email,
+            phone_number=phone_number,
             amount = Decimal(amount)
         )
 
