@@ -11,3 +11,6 @@ class Monitor(models.Model):
 
     datetime_created = models.DateTimeField(auto_now_add=True)
     datetime_updated = models.DateTimeField(auto_now=True)
+
+    def get_absolute_url(self):
+        return reverse('monitor-detail', kwargs={'pk': self.id})

@@ -4,6 +4,7 @@ from decimal import Decimal
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
+from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
 
 from alert.forms import MonitorForm
@@ -28,6 +29,10 @@ class MonitorsHandler(View):
         return HttpResponse(status=201)
 
 
-class CreateMonitor(CreateView):
+class CreateMonitorView(CreateView):
     form_class = MonitorForm
+    model = Monitor
+
+
+class MonitorDetailView(DetailView):
     model = Monitor

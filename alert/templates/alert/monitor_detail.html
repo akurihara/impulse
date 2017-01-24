@@ -1,0 +1,12 @@
+{% extends "alert/base.html" %}
+
+{% block title %}
+  Impulse - Tracker {{ object.id }}
+{% endblock %}
+
+{% block content %}
+  <h1>{{ object.event_title }}</h1>
+  <p>Seatgeek Event ID: {{ object.seatgeek_event_id }}</p>
+  <p>Amount: {{ object.amount }}</p>
+  <p>Date: {{ object.datetime_event_start }}</p>
+{% endblock %}
