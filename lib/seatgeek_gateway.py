@@ -12,7 +12,7 @@ SEATGEEK_DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S'
 SEATGEEK_CLIENT_ID = os.environ.get('SEATGEEK_CLIENT_ID')
 SEATGEEK_CLIENT_SECRET = os.environ.get('SEATGEEK_CLIENT_SECRET')
 
-Event = namedtuple('Event', ['id', 'title', 'datetime_utc', 'lowest_price'])
+Event = namedtuple('Event', ['id', 'title', 'datetime_utc', 'lowest_price', 'url'])
 
 
 def get_event_by_id(event_id):
@@ -38,7 +38,8 @@ def _get_event_tuple_from_event_data(event_data):
         id=event_data['id'],
         title=event_data['short_title'],
         datetime_utc=localized_datetime_utc,
-        lowest_price=lowest_price
+        lowest_price=lowest_price,
+        url=event_data['url']
     )
 
 

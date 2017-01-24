@@ -7,6 +7,11 @@ from twilio.rest import TwilioRestClient
 from alert.services import monitor_service
 from lib.seatgeek_gateway import get_event_by_id
 
+SMS_MESSAGE_BODY = '''Lowest price for {event_title} is ${amount}!
+
+Buy tickets at {url}
+'''
+
 
 def main():
     monitors = monitor_service.get_monitors_for_events_in_next_twenty_four_hours()
@@ -20,9 +25,10 @@ def main():
 def _send_alert_to_user(event):
     twilio_number, twilio_account_sid, twilio_auth_token = _load_twilio_config()
     twilio_client = TwilioRestClient(twilio_account_sid, twilio_auth_token)
-    message = 'Lowest price for {event_name} is ${amount}'.format(
-        event_name=event.title,
-        amount=event.lowest_price
+    message = SMS_MESSAGE_BODY.format(
+        event_title=event.title,
+        amount=event.lowest_price,
+        url=event.url
     )
 
     twilio_client.messages.create(body=message, to='+13106172186', from_=twilio_number)

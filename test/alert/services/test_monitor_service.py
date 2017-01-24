@@ -20,7 +20,8 @@ class CreateMonitorTest(TestCase):
             id='3621831',
             title='Purity Ring',
             datetime_utc=mock_event_datetime_start,
-            lowest_price=Decimal('65')
+            lowest_price=Decimal('65'),
+            url='https://seatgeek.com/purity-ring-21-tickets/brooklyn-new-york-output-2017-01-19-10-pm/concert/3621831'
         )
 
         with patch('lib.seatgeek_gateway.get_event_by_id', return_value=mock_event):
