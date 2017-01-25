@@ -8,8 +8,8 @@ from django.test import TestCase
 from freezegun import freeze_time
 from twilio.rest.resources import Messages
 
+from alert.bin.send_alerts_for_triggered_monitors import main, SMS_MESSAGE_BODY
 from alert.services import monitor_service
-from bin.send_alerts_for_triggered_monitors import main, SMS_MESSAGE_BODY
 from lib.seatgeek_gateway import Event
 
 
@@ -26,7 +26,7 @@ class MainTest(TestCase):
                 amount=Decimal('65.01')
             )
 
-        with patch('bin.send_alerts_for_triggered_monitors.get_event_by_id', return_value=mock_event):
+        with patch('alert.bin.send_alerts_for_triggered_monitors.get_event_by_id', return_value=mock_event):
             main()
 
         expected_body = SMS_MESSAGE_BODY.format(
@@ -51,7 +51,7 @@ class MainTest(TestCase):
                 amount=Decimal('64.99')
             )
 
-        with patch('bin.send_alerts_for_triggered_monitors.get_event_by_id', return_value=mock_event):
+        with patch('alert.bin.send_alerts_for_triggered_monitors.get_event_by_id', return_value=mock_event):
             main()
 
         create_mock.assert_not_called()
@@ -67,7 +67,7 @@ class MainTest(TestCase):
                 amount=Decimal('65.01')
             )
 
-        with patch('bin.send_alerts_for_triggered_monitors.get_event_by_id', return_value=mock_event):
+        with patch('alert.bin.send_alerts_for_triggered_monitors.get_event_by_id', return_value=mock_event):
             main()
 
         create_mock.assert_not_called()
