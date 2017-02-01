@@ -5,7 +5,7 @@ import os
 from twilio.rest import TwilioRestClient
 
 from alert.services import monitor_service
-from lib.seatgeek_gateway import get_event_by_id
+from event.lib.seatgeek_gateway import get_event_by_id
 
 SMS_MESSAGE_BODY = '''Lowest price for {event_title} is ${amount}!
 

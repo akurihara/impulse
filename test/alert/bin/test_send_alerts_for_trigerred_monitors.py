@@ -10,7 +10,7 @@ from twilio.rest.resources import Messages
 
 from alert.bin.send_alerts_for_triggered_monitors import main, SMS_MESSAGE_BODY
 from alert.services import monitor_service
-from lib.seatgeek_gateway import Event
+from event.lib.seatgeek_gateway import Event
 
 
 class MainTest(TestCase):
@@ -19,7 +19,7 @@ class MainTest(TestCase):
     @freeze_time('2017-01-19 3:00')
     def test_sends_sms_message_if_monitor_amount_is_less_than_event_price(self, create_mock):
         mock_event = _create_mock_event()
-        with patch('lib.seatgeek_gateway.get_event_by_id', return_value=mock_event):
+        with patch('event.lib.seatgeek_gateway.get_event_by_id', return_value=mock_event):
             monitor = monitor_service.create_monitor(
                 seatgeek_event_id='3621831',
                 phone_number='+12223334444',
@@ -44,7 +44,7 @@ class MainTest(TestCase):
     @freeze_time('2017-01-19 3:00')
     def test_does_not_send_sms_message_if_monitor_amount_is_higher_than_event_price(self, create_mock):
         mock_event = _create_mock_event()
-        with patch('lib.seatgeek_gateway.get_event_by_id', return_value=mock_event):
+        with patch('event.lib.seatgeek_gateway.get_event_by_id', return_value=mock_event):
             monitor = monitor_service.create_monitor(
                 seatgeek_event_id='3621831',
                 phone_number='+12223334444',
@@ -60,7 +60,7 @@ class MainTest(TestCase):
     @freeze_time('2017-01-19 2:59')
     def test_does_not_send_sms_message_if_monitor_event_starts_in_more_than_twenty_four_hours(self, create_mock):
         mock_event = _create_mock_event()
-        with patch('lib.seatgeek_gateway.get_event_by_id', return_value=mock_event):
+        with patch('event.lib.seatgeek_gateway.get_event_by_id', return_value=mock_event):
             monitor = monitor_service.create_monitor(
                 seatgeek_event_id='3621831',
                 phone_number='+12223334444',

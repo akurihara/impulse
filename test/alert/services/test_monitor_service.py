@@ -9,7 +9,7 @@ from freezegun import freeze_time
 
 from alert.models import Monitor
 from alert.services import monitor_service
-from lib.seatgeek_gateway import Event
+from event.lib.seatgeek_gateway import Event
 
 
 class CreateMonitorTest(TestCase):
@@ -24,7 +24,7 @@ class CreateMonitorTest(TestCase):
             url='https://seatgeek.com/purity-ring-21-tickets/brooklyn-new-york-output-2017-01-19-10-pm/concert/3621831'
         )
 
-        with patch('lib.seatgeek_gateway.get_event_by_id', return_value=mock_event):
+        with patch('event.lib.seatgeek_gateway.get_event_by_id', return_value=mock_event):
             monitor = monitor_service.create_monitor(
                 seatgeek_event_id='3621831',
                 phone_number='+12223334444',

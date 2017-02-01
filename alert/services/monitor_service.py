@@ -3,7 +3,7 @@ from datetime import datetime, time, timedelta
 from django.utils import timezone
 
 from alert.models import Monitor
-from lib import seatgeek_gateway
+from event.lib import seatgeek_gateway
 
 
 def create_monitor(seatgeek_event_id, phone_number, amount):
