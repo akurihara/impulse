@@ -18,8 +18,16 @@ class Event(models.Model):
     datetime_created = models.DateTimeField(auto_now_add=True)
     datetime_updated = models.DateTimeField(auto_now=True)
 
+    @property
+    def current_event_price(self):
+        return self.prices.latest()
+
 
 class EventPrice(models.Model):
+
+    class Meta:
+        get_latest_by = 'id'
+
     event = models.ForeignKey('Event', related_name='prices')
     price = models.DecimalField(max_digits=10, decimal_places=2)
 
