@@ -12,6 +12,7 @@ VENDOR_TYPES = {
 class Event(models.Model):
     datetime_start = models.DateTimeField()
     title = models.CharField(max_length=255)
+    url = models.URLField()
     vendor_id = models.CharField(max_length=10)
     vendor_type = models.PositiveSmallIntegerField(choices=VENDOR_TYPES.items())
 

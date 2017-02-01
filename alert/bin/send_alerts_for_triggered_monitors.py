@@ -36,7 +36,7 @@ def _send_alert_to_user(event, monitor):
     message = SMS_MESSAGE_BODY.format(
         event_title=event.title,
         amount=event.current_event_price.price,
-        url='www.google.com'
+        url=event.url
     )
 
     twilio_client.messages.create(body=message, to=monitor.phone_number.as_e164, from_=twilio_number)

@@ -35,7 +35,7 @@ class MainTest(TestCase):
         expected_body = SMS_MESSAGE_BODY.format(
             event_title=event.title,
             amount=event.current_event_price.price,
-            url='www.google.com'
+            url=event.url
         )
         create_mock.assert_called_once_with(
             body=expected_body,
@@ -82,7 +82,8 @@ def _create_event():
         vendor_type=VENDOR_TYPE_SEATGEEK,
         title='Purity Ring',
         datetime_start=datetime(2017, 1, 20, 3, 0, tzinfo=pytz.utc),
-        price=Decimal('65')
+        price=Decimal('65'),
+        url='https://seatgeek.com/purity-ring-21-tickets/brooklyn-new-york-output-2017-01-19-10-pm/concert/3621831'
     )
 
 

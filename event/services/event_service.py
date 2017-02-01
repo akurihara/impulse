@@ -5,10 +5,11 @@ from django.utils import timezone
 from event.models import Event, EventPrice
 
 
-def create_event(vendor_id, vendor_type, title, datetime_start, price):
+def create_event(vendor_id, vendor_type, title, datetime_start, price, url):
     event = Event.objects.create(
         datetime_start=datetime_start,
         title=title,
+        url=url,
         vendor_id=vendor_id,
         vendor_type=vendor_type,
     )
