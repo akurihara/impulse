@@ -20,7 +20,7 @@ class Event(models.Model):
 
 
 class EventPrice(models.Model):
-    event = models.ForeignKey('Event')
+    event = models.ForeignKey('Event', related_name='prices')
     price = models.DecimalField(max_digits=10, decimal_places=2)
 
     datetime_created = models.DateTimeField(auto_now_add=True)
