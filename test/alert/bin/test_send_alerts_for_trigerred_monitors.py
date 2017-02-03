@@ -8,8 +8,8 @@ from django.test import TestCase
 from freezegun import freeze_time
 from twilio.rest.resources import Messages
 
+from alert.constants import MONITOR_STATUS_ACTIVATED
 from alert.bin.send_alerts_for_triggered_monitors import main, SMS_MESSAGE_BODY
-from alert.services import monitor_service
 from event.lib.seatgeek_gateway import Event
 from event.models import VENDOR_TYPE_SEATGEEK
 from event.services import event_service
@@ -22,10 +22,10 @@ class MainTest(TestCase):
     @freeze_time('2017-01-19 3:00')
     def test_sends_sms_message_if_monitor_amount_is_less_than_event_price(self, create_mock):
         event = factories.create_event()
-        monitor = monitor_service.create_monitor_for_event(
+        monitor = factories.create_monitor_for_event(
             event=event,
-            phone_number='+12223334444',
-            amount=Decimal('65.01')
+            amount=Decimal('65.01'),
+            status=MONITOR_STATUS_ACTIVATED
         )
         mock_seatgeek_event = _create_mock_seatgeek_event()
 
@@ -47,10 +47,10 @@ class MainTest(TestCase):
     @freeze_time('2017-01-19 3:00')
     def test_does_not_send_sms_message_if_monitor_amount_is_higher_than_event_price(self, create_mock):
         event = factories.create_event()
-        monitor = monitor_service.create_monitor_for_event(
+        monitor = factories.create_monitor_for_event(
             event=event,
-            phone_number='+12223334444',
-            amount=Decimal('64.99')
+            amount=Decimal('64.99'),
+            status=MONITOR_STATUS_ACTIVATED
         )
         mock_seatgeek_event = _create_mock_seatgeek_event()
 
@@ -63,11 +63,23 @@ class MainTest(TestCase):
     @freeze_time('2017-01-19 2:59')
     def test_does_not_send_sms_message_if_monitor_event_starts_in_more_than_twenty_four_hours(self, create_mock):
         event = factories.create_event()
-        monitor = monitor_service.create_monitor_for_event(
+        monitor = factories.create_monitor_for_event(
             event=event,
-            phone_number='+12223334444',
-            amount=Decimal('65.01')
+            amount=Decimal('65.01'),
+            status=MONITOR_STATUS_ACTIVATED
         )
+        mock_seatgeek_event = _create_mock_seatgeek_event()
+
+        with patch('alert.bin.send_alerts_for_triggered_monitors.get_event_by_id', return_value=mock_seatgeek_event):
+            main()
+
+        create_mock.assert_not_called()
+
+    @patch.object(Messages, 'create')
+    @freeze_time('2017-01-19 3:00')
+    def test_does_not_send_sms_message_if_monitor_status_is_not_activated(self, create_mock):
+        event = factories.create_event()
+        monitor = factories.create_monitor_for_event(event)
         mock_seatgeek_event = _create_mock_seatgeek_event()
 
         with patch('alert.bin.send_alerts_for_triggered_monitors.get_event_by_id', return_value=mock_seatgeek_event):

@@ -4,6 +4,7 @@ import os
 
 from twilio.rest import TwilioRestClient
 
+from alert.constants import MONITOR_STATUS_ACTIVATED
 from alert.services import monitor_service
 from event.lib.seatgeek_gateway import get_event_by_id
 from event.services import event_service
@@ -26,8 +27,15 @@ def main():
 
 def _check_for_triggered_monitors_and_send_alerts(event):
     for monitor in event.monitors.all():
-        if event.current_price.price <= monitor.amount:
+        if _should_send_alert_to_user(event, monitor):
             _send_alert_to_user(event, monitor)
+
+
+def _should_send_alert_to_user(event, monitor):
+    return (
+        event.current_price.price <= monitor.amount and
+        monitor.current_status.status == MONITOR_STATUS_ACTIVATED
+    )
 
 
 def _send_alert_to_user(event, monitor):
