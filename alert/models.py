@@ -1,15 +1,7 @@
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
-STATUS_CREATED = 0
-STATUS_ACTIVATED = 1
-STATUS_DEACTIVATED = 2
-
-STATUSES = {
-    STATUS_CREATED: 'Created',
-    STATUS_ACTIVATED: 'Activated',
-    STATUS_DEACTIVATED: 'Deactivated'
-}
+from alert.constants import MONITOR_STATUSES
 
 
 class Monitor(models.Model):
@@ -30,7 +22,7 @@ class MonitorStatus(models.Model):
         get_latest_by = 'id'
 
     monitor = models.ForeignKey('Monitor', related_name='statuses')
-    status = models.PositiveSmallIntegerField(choices=STATUSES.items())
+    status = models.PositiveSmallIntegerField(choices=MONITOR_STATUSES.items())
 
     datetime_created = models.DateTimeField(auto_now_add=True)
     datetime_updated = models.DateTimeField(auto_now=True)
