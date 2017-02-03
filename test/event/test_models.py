@@ -15,6 +15,6 @@ class CurrentEventPriceTest(TestCase):
         event = factories.create_event()
         event_service.create_event_price_for_event(event, Decimal('60'))
 
-        current_event_price = event.current_event_price
+        current_price = event.current_price
 
-        self.assertEqual(EventPrice.objects.filter(event=event).latest(), current_event_price)
+        self.assertEqual(EventPrice.objects.filter(event=event).latest(), current_price)

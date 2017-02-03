@@ -35,7 +35,8 @@ class CreateEventTest(TestCase):
             url='https://seatgeek.com/purity-ring-21-tickets/brooklyn-new-york-output-2017-01-19-10-pm/concert/3621831'
         )
 
-        self.assertEqual(1, EventPrice.objects.filter(event_id=event.id).count())
+        self.assertEqual(1, event.prices.count())
+        self.assertEqual(Decimal('65'), event.current_price.price)
 
 
 class CreateEventPriceForEventTest(TestCase):
@@ -45,7 +46,8 @@ class CreateEventPriceForEventTest(TestCase):
 
         event_service.create_event_price_for_event(event, Decimal('60'))
 
-        self.assertEqual(2, EventPrice.objects.filter(event_id=event.id).count())
+        self.assertEqual(2, event.prices.count())
+        self.assertEqual(Decimal('60'), event.current_price.price)
 
 
 class GetEventsStartingInNextTwentyFourHoursTest(TestCase):

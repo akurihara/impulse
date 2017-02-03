@@ -26,7 +26,7 @@ def main():
 
 def _check_for_triggered_monitors_and_send_alerts(event):
     for monitor in event.monitors.all():
-        if event.current_event_price.price <= monitor.amount:
+        if event.current_price.price <= monitor.amount:
             _send_alert_to_user(event, monitor)
 
 
@@ -35,7 +35,7 @@ def _send_alert_to_user(event, monitor):
     twilio_client = TwilioRestClient(twilio_account_sid, twilio_auth_token)
     message = SMS_MESSAGE_BODY.format(
         event_title=event.title,
-        amount=event.current_event_price.price,
+        amount=event.current_price.price,
         url=event.url
     )
 

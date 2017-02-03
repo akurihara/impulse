@@ -34,7 +34,7 @@ class MainTest(TestCase):
 
         expected_body = SMS_MESSAGE_BODY.format(
             event_title=event.title,
-            amount=event.current_event_price.price,
+            amount=event.current_price.price,
             url=event.url
         )
         create_mock.assert_called_once_with(

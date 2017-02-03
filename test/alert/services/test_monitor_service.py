@@ -37,8 +37,8 @@ class CreateMonitorForEventTest(TestCase):
             amount=Decimal('70')
         )
 
-        monitor_status = MonitorStatus.objects.filter(monitor=monitor).latest()
-        self.assertEqual(MONITOR_STATUS_CREATED, monitor_status.status)
+        self.assertEqual(1, monitor.statuses.count())
+        self.assertEqual(MONITOR_STATUS_CREATED, monitor.current_status.status)
 
 
 class SetStatusOfMonitor(TestCase):
@@ -53,9 +53,8 @@ class SetStatusOfMonitor(TestCase):
 
         monitor_service.set_status_of_monitor(monitor, MONITOR_STATUS_ACTIVATED)
 
-        self.assertEqual(2, MonitorStatus.objects.filter(monitor=monitor).count())
-        monitor_status = MonitorStatus.objects.filter(monitor=monitor).latest()
-        self.assertEqual(MONITOR_STATUS_ACTIVATED, monitor_status.status)
+        self.assertEqual(2, monitor.statuses.count())
+        self.assertEqual(MONITOR_STATUS_ACTIVATED, monitor.current_status.status)
 
     def test_raises_error_if_status_is_invalid(self):
         event = factories.create_event()

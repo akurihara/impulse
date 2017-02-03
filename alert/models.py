@@ -15,6 +15,10 @@ class Monitor(models.Model):
     def get_absolute_url(self):
         return reverse('monitor-detail', kwargs={'pk': self.id})
 
+    @property
+    def current_status(self):
+        return self.statuses.latest()
+
 
 class MonitorStatus(models.Model):
 

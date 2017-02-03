@@ -20,7 +20,7 @@ class Event(models.Model):
     datetime_updated = models.DateTimeField(auto_now=True)
 
     @property
-    def current_event_price(self):
+    def current_price(self):
         return self.prices.latest()
 
 
