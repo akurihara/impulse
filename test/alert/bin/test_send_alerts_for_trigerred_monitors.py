@@ -13,7 +13,7 @@ from alert.services import monitor_service
 from event.lib.seatgeek_gateway import Event
 from event.models import VENDOR_TYPE_SEATGEEK
 from event.services import event_service
-
+from test import factories
 
 
 class MainTest(TestCase):
@@ -21,7 +21,7 @@ class MainTest(TestCase):
     @patch.object(Messages, 'create')
     @freeze_time('2017-01-19 3:00')
     def test_sends_sms_message_if_monitor_amount_is_less_than_event_price(self, create_mock):
-        event = _create_event()
+        event = factories.create_event()
         monitor = monitor_service.create_monitor_for_event(
             event=event,
             phone_number='+12223334444',
@@ -46,7 +46,7 @@ class MainTest(TestCase):
     @patch.object(Messages, 'create')
     @freeze_time('2017-01-19 3:00')
     def test_does_not_send_sms_message_if_monitor_amount_is_higher_than_event_price(self, create_mock):
-        event = _create_event()
+        event = factories.create_event()
         monitor = monitor_service.create_monitor_for_event(
             event=event,
             phone_number='+12223334444',
@@ -62,7 +62,7 @@ class MainTest(TestCase):
     @patch.object(Messages, 'create')
     @freeze_time('2017-01-19 2:59')
     def test_does_not_send_sms_message_if_monitor_event_starts_in_more_than_twenty_four_hours(self, create_mock):
-        event = _create_event()
+        event = factories.create_event()
         monitor = monitor_service.create_monitor_for_event(
             event=event,
             phone_number='+12223334444',
@@ -74,17 +74,6 @@ class MainTest(TestCase):
             main()
 
         create_mock.assert_not_called()
-
-
-def _create_event():
-    return event_service.create_event(
-        vendor_id='3621831',
-        vendor_type=VENDOR_TYPE_SEATGEEK,
-        title='Purity Ring',
-        datetime_start=datetime(2017, 1, 20, 3, 0, tzinfo=pytz.utc),
-        price=Decimal('65'),
-        url='https://seatgeek.com/purity-ring-21-tickets/brooklyn-new-york-output-2017-01-19-10-pm/concert/3621831'
-    )
 
 
 def _create_mock_seatgeek_event():
