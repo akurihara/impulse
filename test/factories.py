@@ -8,6 +8,8 @@ from alert.services import monitor_service
 from event.models import Event, VENDOR_TYPE_SEATGEEK
 from event.services import event_service
 
+VALID_PHONE_NUMBER = '+15005550006'
+
 
 def create_event(datetime_start=None):
     datetime_start = datetime_start or datetime(2017, 1, 20, 3, 0, tzinfo=pytz.utc)
@@ -21,12 +23,13 @@ def create_event(datetime_start=None):
         url='https://seatgeek.com/purity-ring-21-tickets/brooklyn-new-york-output-2017-01-19-10-pm/concert/3621831'
     )
 
+
 def create_monitor_for_event(event, amount=None, status=None):
     amount = amount or Decimal('65.01')
 
     monitor = monitor_service.create_monitor_for_event(
         event=event,
-        phone_number='+12223334444',
+        phone_number=VALID_PHONE_NUMBER,
         amount=amount
     )
 

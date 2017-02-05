@@ -8,8 +8,8 @@ from django.test import TestCase
 from freezegun import freeze_time
 from twilio.rest.resources import Messages
 
-from alert.constants import MONITOR_STATUS_ACTIVATED
-from alert.bin.send_alerts_for_triggered_monitors import main, SMS_MESSAGE_BODY
+from alert.constants import MONITOR_STATUS_ACTIVATED, MONITOR_TRIGGERED_MESSAGE
+from alert.bin.send_alerts_for_triggered_monitors import main
 from event.lib.seatgeek_gateway import Event
 from event.models import VENDOR_TYPE_SEATGEEK
 from event.services import event_service
@@ -18,9 +18,8 @@ from test import factories
 
 class MainTest(TestCase):
 
-    @patch.object(Messages, 'create')
     @freeze_time('2017-01-19 3:00')
-    def test_sends_sms_message_if_monitor_amount_is_less_than_event_price(self, create_mock):
+    def test_sends_sms_message_if_monitor_amount_is_less_than_event_price(self):
         event = factories.create_event()
         monitor = factories.create_monitor_for_event(
             event=event,
@@ -30,22 +29,22 @@ class MainTest(TestCase):
         mock_seatgeek_event = _create_mock_seatgeek_event()
 
         with patch('alert.bin.send_alerts_for_triggered_monitors.get_event_by_id', return_value=mock_seatgeek_event):
-            main()
+            with patch.object(Messages, 'create') as twilio_mock:
+                main()
 
-        expected_body = SMS_MESSAGE_BODY.format(
+        expected_body = MONITOR_TRIGGERED_MESSAGE.format(
             event_title=event.title,
             amount=event.current_price.price,
             url=event.url
         )
-        create_mock.assert_called_once_with(
+        twilio_mock.assert_called_once_with(
             body=expected_body,
-            to='+12223334444',
+            to=monitor.phone_number.as_e164,
             from_=ANY
         )
 
-    @patch.object(Messages, 'create')
     @freeze_time('2017-01-19 3:00')
-    def test_does_not_send_sms_message_if_monitor_amount_is_higher_than_event_price(self, create_mock):
+    def test_does_not_send_sms_message_if_monitor_amount_is_higher_than_event_price(self):
         event = factories.create_event()
         monitor = factories.create_monitor_for_event(
             event=event,
@@ -55,13 +54,13 @@ class MainTest(TestCase):
         mock_seatgeek_event = _create_mock_seatgeek_event()
 
         with patch('alert.bin.send_alerts_for_triggered_monitors.get_event_by_id', return_value=mock_seatgeek_event):
-            main()
+            with patch.object(Messages, 'create') as twilio_mock:
+                main()
 
-        create_mock.assert_not_called()
+        twilio_mock.assert_not_called()
 
-    @patch.object(Messages, 'create')
     @freeze_time('2017-01-19 2:59')
-    def test_does_not_send_sms_message_if_monitor_event_starts_in_more_than_twenty_four_hours(self, create_mock):
+    def test_does_not_send_sms_message_if_monitor_event_starts_in_more_than_twenty_four_hours(self):
         event = factories.create_event()
         monitor = factories.create_monitor_for_event(
             event=event,
@@ -71,21 +70,22 @@ class MainTest(TestCase):
         mock_seatgeek_event = _create_mock_seatgeek_event()
 
         with patch('alert.bin.send_alerts_for_triggered_monitors.get_event_by_id', return_value=mock_seatgeek_event):
-            main()
+            with patch.object(Messages, 'create') as twilio_mock:
+                main()
 
-        create_mock.assert_not_called()
+        twilio_mock.assert_not_called()
 
-    @patch.object(Messages, 'create')
     @freeze_time('2017-01-19 3:00')
-    def test_does_not_send_sms_message_if_monitor_status_is_not_activated(self, create_mock):
+    def test_does_not_send_sms_message_if_monitor_status_is_not_activated(self):
         event = factories.create_event()
         monitor = factories.create_monitor_for_event(event)
         mock_seatgeek_event = _create_mock_seatgeek_event()
 
         with patch('alert.bin.send_alerts_for_triggered_monitors.get_event_by_id', return_value=mock_seatgeek_event):
-            main()
+            with patch.object(Messages, 'create') as twilio_mock:
+                main()
 
-        create_mock.assert_not_called()
+        twilio_mock.assert_not_called()
 
 
 def _create_mock_seatgeek_event():
