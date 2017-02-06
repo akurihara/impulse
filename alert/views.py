@@ -36,3 +36,18 @@ class CreateMonitorView(CreateView):
 
 class MonitorDetailView(DetailView):
     model = Monitor
+
+
+class IncomingSMSMessageView(View):
+
+    def post(self, request):
+        print '[{file_name}]: {request_body}'.format(
+            file_name=__name__,
+            request_body=request.body
+        )
+        print '[{file_name}]: {request_body}'.format(
+            file_name=__name__,
+            request_body=request.POST
+        )
+
+        return HttpResponse(status=200)
