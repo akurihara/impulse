@@ -9,7 +9,8 @@ from twilio.rest.resources import Messages
 from alert.constants import (
     MONITOR_CONFIRMATION_MESSAGE,
     MONITOR_STATUS_ACTIVATED,
-    MONITOR_STATUS_CREATED
+    MONITOR_STATUS_CREATED,
+    MONITOR_STATUS_DEACTIVATED
 )
 from alert.models import Monitor, MonitorStatus
 from alert.services import monitor_service
@@ -89,3 +90,44 @@ class SetStatusOfMonitor(TestCase):
 
         with self.assertRaises(ValueError):
             monitor_service.set_status_of_monitor(monitor, 'invalid_status')
+
+
+class GetActiveMonitorByPhoneNumberTest(TestCase):
+
+    def test_returns_monitor_with_activated_status(self):
+        event = factories.create_event()
+        monitor = factories.create_monitor_for_event(event)
+        monitor_service.set_status_of_monitor(monitor, MONITOR_STATUS_ACTIVATED)
+
+        active_monitor = monitor_service.get_active_monitor_by_phone_number(factories.VALID_PHONE_NUMBER)
+
+        self.assertEqual(monitor, active_monitor)
+
+    def test_returns_monitor_for_given_phone_number_when_active_monitors_exist_for_multiple_phone_numbers(self):
+        event = factories.create_event()
+        first_monitor = factories.create_monitor_for_event(event)
+        second_monitor = factories.create_monitor_for_event(event, phone_number='+13106172186')
+        monitor_service.set_status_of_monitor(first_monitor, MONITOR_STATUS_ACTIVATED)
+        monitor_service.set_status_of_monitor(second_monitor, MONITOR_STATUS_ACTIVATED)
+
+        active_monitor = monitor_service.get_active_monitor_by_phone_number(factories.VALID_PHONE_NUMBER)
+
+        self.assertEqual(first_monitor, active_monitor)
+
+    def test_returns_none_if_monitors_has_been_created_but_not_activated(self):
+        event = factories.create_event()
+        monitor = factories.create_monitor_for_event(event)
+
+        active_monitor = monitor_service.get_active_monitor_by_phone_number(factories.VALID_PHONE_NUMBER)
+
+        self.assertIsNone(active_monitor)
+
+    def test_returns_none_if_monitor_has_been_deactivated(self):
+        event = factories.create_event()
+        monitor = factories.create_monitor_for_event(event)
+        monitor_service.set_status_of_monitor(monitor, MONITOR_STATUS_ACTIVATED)
+        monitor_service.set_status_of_monitor(monitor, MONITOR_STATUS_DEACTIVATED)
+
+        active_monitor = monitor_service.get_active_monitor_by_phone_number(factories.VALID_PHONE_NUMBER)
+
+        self.assertIsNone(active_monitor)

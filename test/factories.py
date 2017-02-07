@@ -24,12 +24,13 @@ def create_event(datetime_start=None):
     )
 
 
-def create_monitor_for_event(event, amount=None, status=None):
+def create_monitor_for_event(event, amount=None, phone_number=None, status=None):
     amount = amount or Decimal('65.01')
+    phone_number = phone_number or VALID_PHONE_NUMBER
 
     monitor = monitor_service.create_monitor_for_event(
         event=event,
-        phone_number=VALID_PHONE_NUMBER,
+        phone_number=phone_number,
         amount=amount
     )
 

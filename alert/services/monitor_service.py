@@ -1,11 +1,13 @@
 from datetime import datetime, time, timedelta
 import os
 
+from django.db.models import Max, Prefetch
 from twilio.rest import TwilioRestClient
 
 from alert.constants import (
     MONITOR_CONFIRMATION_MESSAGE,
     MONITOR_STATUSES,
+    MONITOR_STATUS_ACTIVATED,
     MONITOR_STATUS_CREATED
 )
 from alert.models import Monitor, MonitorStatus
@@ -57,3 +59,17 @@ def _load_twilio_config():
 
 def _format_event_title(title):
     return (title[:60] + '...') if len(title) > 60 else title
+
+
+def get_active_monitor_by_phone_number(phone_number):
+    try:
+        monitor = Monitor.objects.annotate(
+            most_recent_status=Max('statuses__status')
+        ).get(
+            phone_number=phone_number,
+            most_recent_status=MONITOR_STATUS_ACTIVATED
+        )
+    except Monitor.DoesNotExist:
+        monitor = None
+
+    return monitor
