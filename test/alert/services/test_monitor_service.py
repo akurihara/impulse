@@ -152,7 +152,7 @@ class DoesActivatedOrCreatedMonitorExistForPhoneNumberTest(TestCase):
             monitor_service.does_activated_or_created_monitor_exist_for_phone_number(phone_number)
         )
 
-    def test_returns_true_if_created_monitor_exists_for_phone(self):
+    def test_returns_true_if_created_monitor_exists_for_phone_number(self):
         event = factories.create_event()
         phone_number = factories.VALID_PHONE_NUMBER
         monitor = factories.create_monitor_for_event(event=event, phone_number=phone_number)
@@ -170,3 +170,41 @@ class DoesActivatedOrCreatedMonitorExistForPhoneNumberTest(TestCase):
         self.assertFalse(
             monitor_service.does_activated_or_created_monitor_exist_for_phone_number(phone_number)
         )
+
+
+class GetCreatedMonitorForPhoneNumberTest(TestCase):
+
+    def test_returns_true_if_created_monitor_exists_for_phone_number(self):
+        event = factories.create_event()
+        phone_number = factories.VALID_PHONE_NUMBER
+        monitor = factories.create_monitor_for_event(event=event, phone_number=phone_number)
+
+        actual_monitor = monitor_service.get_created_monitor_for_phone_number(phone_number)
+
+        self.assertEqual(monitor, actual_monitor)
+
+    def test_returns_monitor_if_created_monitors_exists_for_multiple_phone_numbers(self):
+        event = factories.create_event()
+        phone_number = factories.VALID_PHONE_NUMBER
+        first_monitor = factories.create_monitor_for_event(event=event, phone_number=phone_number)
+        second_monitor = factories.create_monitor_for_event(event=event, phone_number='+13106172186')
+
+        actual_monitor = monitor_service.get_created_monitor_for_phone_number(phone_number)
+
+        self.assertEqual(first_monitor, actual_monitor)
+
+    def test_returns_none_if_monitor_exists_for_phone_number_but_does_not_have_created_status(self):
+        event = factories.create_event()
+        phone_number = factories.VALID_PHONE_NUMBER
+        monitor = factories.create_monitor_for_event(
+            event=event,
+            phone_number=phone_number,
+            status=MONITOR_STATUS_ACTIVATED
+        )
+
+        self.assertIsNone(monitor_service.get_created_monitor_for_phone_number(phone_number))
+
+    def test_returns_none_if_no_monitors_exist_for_phone_number(self):
+        phone_number = factories.VALID_PHONE_NUMBER
+
+        self.assertIsNone(monitor_service.get_created_monitor_for_phone_number(phone_number))

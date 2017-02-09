@@ -65,9 +65,29 @@ def _format_event_title(title):
 
 
 def does_activated_or_created_monitor_exist_for_phone_number(phone_number):
+    statuses = (MONITOR_STATUS_CREATED, MONITOR_STATUS_ACTIVATED)
+    activated_or_created_monitors = _get_monitors_with_current_statuses_queryset(statuses)
+
+    return activated_or_created_monitors.filter(
+        phone_number=phone_number,
+    ).exists()
+
+
+def get_created_monitor_for_phone_number(phone_number):
+    statuses = (MONITOR_STATUS_CREATED,)
+
+    try:
+        created_monitors = _get_monitors_with_current_statuses_queryset(statuses)
+        monitor = created_monitors.get(phone_number=phone_number)
+    except Monitor.DoesNotExist:
+        monitor = None
+
+    return monitor
+
+
+def _get_monitors_with_current_statuses_queryset(statuses):
     return Monitor.objects.annotate(
         most_recent_status=Max('statuses__status')
     ).filter(
-        phone_number=phone_number,
-        most_recent_status__in=(MONITOR_STATUS_ACTIVATED, MONITOR_STATUS_CREATED)
-    ).exists()
+        most_recent_status__in=statuses
+    )
