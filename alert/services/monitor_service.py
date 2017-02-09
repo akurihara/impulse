@@ -5,10 +5,10 @@ from django.db.models import Max, Prefetch
 from twilio.rest import TwilioRestClient
 
 from alert.constants import (
-    MONITOR_CONFIRMATION_MESSAGE,
     MONITOR_STATUSES,
     MONITOR_STATUS_ACTIVATED,
-    MONITOR_STATUS_CREATED
+    MONITOR_STATUS_CREATED,
+    OUTGOING_MESSAGE_MONITOR_CONFIRMATION
 )
 from alert.models import Monitor, MonitorStatus
 
@@ -47,7 +47,7 @@ def _send_monitor_confirmation_message(monitor, event):
     twilio_client = TwilioRestClient(twilio_account_sid, twilio_auth_token)
 
     event_title = _format_event_title(event.title)
-    message = MONITOR_CONFIRMATION_MESSAGE.format(event_title=event_title)
+    message = OUTGOING_MESSAGE_MONITOR_CONFIRMATION.format(event_title=event_title)
 
     twilio_client.messages.create(body=message, to=monitor.phone_number.as_e164, from_=twilio_number)
 

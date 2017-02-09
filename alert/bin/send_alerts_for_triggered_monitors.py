@@ -4,7 +4,7 @@ import django
 django.setup()
 from twilio.rest import TwilioRestClient
 
-from alert.constants import MONITOR_STATUS_ACTIVATED, MONITOR_TRIGGERED_MESSAGE
+from alert.constants import MONITOR_STATUS_ACTIVATED, OUTGOING_MESSAGE_MONITOR_TRIGGERED
 from alert.services import monitor_service
 from event.lib.seatgeek_gateway import get_event_by_id
 from event.services import event_service
@@ -36,7 +36,7 @@ def _should_send_alert_to_user(event, monitor):
 def _send_alert_to_user(event, monitor):
     twilio_number, twilio_account_sid, twilio_auth_token = _load_twilio_config()
     twilio_client = TwilioRestClient(twilio_account_sid, twilio_auth_token)
-    message = MONITOR_TRIGGERED_MESSAGE.format(
+    message = OUTGOING_MESSAGE_MONITOR_TRIGGERED.format(
         event_title=event.title,
         amount=event.current_price.price,
         url=event.url

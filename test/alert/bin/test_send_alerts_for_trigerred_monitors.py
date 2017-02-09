@@ -8,7 +8,7 @@ from django.test import TestCase
 from freezegun import freeze_time
 from twilio.rest.resources import Messages
 
-from alert.constants import MONITOR_STATUS_ACTIVATED, MONITOR_TRIGGERED_MESSAGE
+from alert.constants import MONITOR_STATUS_ACTIVATED, OUTGOING_MESSAGE_MONITOR_TRIGGERED
 from alert.bin.send_alerts_for_triggered_monitors import main
 from event.lib.seatgeek_gateway import Event
 from event.models import VENDOR_TYPE_SEATGEEK
@@ -32,7 +32,7 @@ class MainTest(TestCase):
             with patch.object(Messages, 'create') as twilio_mock:
                 main()
 
-        expected_body = MONITOR_TRIGGERED_MESSAGE.format(
+        expected_body = OUTGOING_MESSAGE_MONITOR_TRIGGERED.format(
             event_title=event.title,
             amount=event.current_price.price,
             url=event.url

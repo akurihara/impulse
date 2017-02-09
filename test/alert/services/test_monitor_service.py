@@ -7,10 +7,10 @@ from django.test import TestCase
 from twilio.rest.resources import Messages
 
 from alert.constants import (
-    MONITOR_CONFIRMATION_MESSAGE,
     MONITOR_STATUS_ACTIVATED,
     MONITOR_STATUS_CREATED,
-    MONITOR_STATUS_DEACTIVATED
+    MONITOR_STATUS_DEACTIVATED,
+    OUTGOING_MESSAGE_MONITOR_CONFIRMATION
 )
 from alert.models import Monitor, MonitorStatus
 from alert.services import monitor_service
@@ -57,7 +57,7 @@ class CreateMonitorForEventTest(TestCase):
             amount=Decimal('70')
         )
 
-        expected_body = MONITOR_CONFIRMATION_MESSAGE.format(event_title=event.title)
+        expected_body = OUTGOING_MESSAGE_MONITOR_CONFIRMATION.format(event_title=event.title)
         twilio_mock.assert_called_once_with(
             body=expected_body,
             to=factories.VALID_PHONE_NUMBER,

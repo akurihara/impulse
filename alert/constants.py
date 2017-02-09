@@ -11,13 +11,13 @@ MONITOR_STATUSES = {
 INCOMING_MESSAGE_ACTIVATE_MONITOR = '1'
 INCOMING_MESSAGE_DEACTIVATE_MONITOR = '2'
 
-MONITOR_CONFIRMATION_MESSAGE = '''This number was registered to track ticket prices for {event_title}. Please reply:
+OUTGOING_MESSAGE_MONITOR_CONFIRMATION = '''This number was registered to track ticket prices for {event_title}. Please reply:
 
 1: confirm
 2: cancel
 '''
 
-MONITOR_TRIGGERED_MESSAGE = '''Lowest price for {event_title} is ${amount}!
+OUTGOING_MESSAGE_MONITOR_TRIGGERED = '''Lowest price for {event_title} is ${amount}!
 
 Buy tickets at {url}
 '''
