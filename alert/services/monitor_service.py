@@ -85,6 +85,18 @@ def get_created_monitor_for_phone_number(phone_number):
     return monitor
 
 
+def get_activated_monitor_for_phone_number(phone_number):
+    statuses = (MONITOR_STATUS_ACTIVATED,)
+
+    try:
+        activated_monitors = _get_monitors_with_current_statuses_queryset(statuses)
+        monitor = activated_monitors.get(phone_number=phone_number)
+    except Monitor.DoesNotExist:
+        monitor = None
+
+    return monitor
+
+
 def _get_monitors_with_current_statuses_queryset(statuses):
     return Monitor.objects.annotate(
         most_recent_status=Max('statuses__status')

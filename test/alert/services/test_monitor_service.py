@@ -208,3 +208,49 @@ class GetCreatedMonitorForPhoneNumberTest(TestCase):
         phone_number = factories.VALID_PHONE_NUMBER
 
         self.assertIsNone(monitor_service.get_created_monitor_for_phone_number(phone_number))
+
+
+class GetActivatedMonitorForPhoneNumberTest(TestCase):
+
+    def test_returns_true_if_activated_monitor_exists_for_phone_number(self):
+        event = factories.create_event()
+        phone_number = factories.VALID_PHONE_NUMBER
+        monitor = factories.create_monitor_for_event(
+            event=event,
+            phone_number=phone_number,
+            status=MONITOR_STATUS_ACTIVATED
+        )
+
+        actual_monitor = monitor_service.get_activated_monitor_for_phone_number(phone_number)
+
+        self.assertEqual(monitor, actual_monitor)
+
+    def test_returns_monitor_if_activated_monitors_exists_for_multiple_phone_numbers(self):
+        event = factories.create_event()
+        phone_number = factories.VALID_PHONE_NUMBER
+        first_monitor = factories.create_monitor_for_event(
+            event=event,
+            phone_number=phone_number,
+            status=MONITOR_STATUS_ACTIVATED
+        )
+        second_monitor = factories.create_monitor_for_event(
+            event=event,
+            phone_number='+13106172186',
+            status=MONITOR_STATUS_ACTIVATED
+        )
+
+        actual_monitor = monitor_service.get_activated_monitor_for_phone_number(phone_number)
+
+        self.assertEqual(first_monitor, actual_monitor)
+
+    def test_returns_none_if_monitor_exists_for_phone_number_but_does_not_have_activated_status(self):
+        event = factories.create_event()
+        phone_number = factories.VALID_PHONE_NUMBER
+        monitor = factories.create_monitor_for_event(event=event, phone_number=phone_number)
+
+        self.assertIsNone(monitor_service.get_activated_monitor_for_phone_number(phone_number))
+
+    def test_returns_none_if_no_monitors_exist_for_phone_number(self):
+        phone_number = factories.VALID_PHONE_NUMBER
+
+        self.assertIsNone(monitor_service.get_activated_monitor_for_phone_number(phone_number))
