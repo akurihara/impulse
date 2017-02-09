@@ -41,13 +41,12 @@ class MonitorDetailView(DetailView):
 class IncomingSMSMessageView(View):
 
     def post(self, request):
-        print '[{file_name}]: {request_body}'.format(
-            file_name=__name__,
-            request_body=request.body
-        )
-        print '[{file_name}]: {request_body}'.format(
-            file_name=__name__,
-            request_body=request.POST
-        )
+        from_phone_number = request.POST['From']
+        message = request.POST['Body']
+
+        if message.strip() == '1':
+            pass # activate created monitor
+        else:
+            pass # deactive active monitor
 
         return HttpResponse(status=200)

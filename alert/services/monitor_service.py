@@ -14,6 +14,9 @@ from alert.models import Monitor, MonitorStatus
 
 
 def create_monitor_for_event(event, phone_number, amount):
+    if does_activated_or_created_monitor_exist_for_phone_number(phone_number):
+        raise ValueError('All monitors for {} have not been deactivated'.format(phone_number))
+
     monitor = Monitor.objects.create(
         amount=amount,
         phone_number=phone_number,
@@ -61,15 +64,10 @@ def _format_event_title(title):
     return (title[:60] + '...') if len(title) > 60 else title
 
 
-def get_active_monitor_by_phone_number(phone_number):
-    try:
-        monitor = Monitor.objects.annotate(
-            most_recent_status=Max('statuses__status')
-        ).get(
-            phone_number=phone_number,
-            most_recent_status=MONITOR_STATUS_ACTIVATED
-        )
-    except Monitor.DoesNotExist:
-        monitor = None
-
-    return monitor
+def does_activated_or_created_monitor_exist_for_phone_number(phone_number):
+    return Monitor.objects.annotate(
+        most_recent_status=Max('statuses__status')
+    ).filter(
+        phone_number=phone_number,
+        most_recent_status__in=(MONITOR_STATUS_ACTIVATED, MONITOR_STATUS_CREATED)
+    ).exists()
