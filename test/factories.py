@@ -5,7 +5,7 @@ from decimal import Decimal
 import pytz
 
 from alert.services import monitor_service
-from event.models import Event, VENDOR_TYPE_SEATGEEK
+from event.models import VENDOR_TYPE_SEATGEEK
 from event.services import event_service
 
 VALID_PHONE_NUMBER = '+15005550006'

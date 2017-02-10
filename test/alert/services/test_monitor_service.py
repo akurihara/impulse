@@ -1,7 +1,5 @@
-from datetime import datetime
 from decimal import Decimal
 from mock import ANY, patch
-import pytz
 
 from django.test import TestCase
 from twilio.rest.resources import Messages
@@ -12,10 +10,8 @@ from alert.constants import (
     MONITOR_STATUS_DEACTIVATED,
     OUTGOING_MESSAGE_MONITOR_CONFIRMATION
 )
-from alert.models import Monitor, MonitorStatus
+from alert.models import Monitor
 from alert.services import monitor_service
-from event.models import VENDOR_TYPE_SEATGEEK
-from event.services import event_service
 from test import factories
 
 
@@ -51,7 +47,7 @@ class CreateMonitorForEventTest(TestCase):
     def test_sends_monitor_confirmation_message(self, twilio_mock):
         event = factories.create_event()
 
-        monitor = monitor_service.create_monitor_for_event(
+        monitor_service.create_monitor_for_event(
             event=event,
             phone_number=factories.VALID_PHONE_NUMBER,
             amount=Decimal('70')
@@ -155,7 +151,7 @@ class DoesActivatedOrCreatedMonitorExistForPhoneNumberTest(TestCase):
     def test_returns_true_if_created_monitor_exists_for_phone_number(self):
         event = factories.create_event()
         phone_number = factories.VALID_PHONE_NUMBER
-        monitor = factories.create_monitor_for_event(event=event, phone_number=phone_number)
+        factories.create_monitor_for_event(event=event, phone_number=phone_number)
 
         self.assertTrue(
             monitor_service.does_activated_or_created_monitor_exist_for_phone_number(phone_number)
@@ -187,7 +183,7 @@ class GetCreatedMonitorForPhoneNumberTest(TestCase):
         event = factories.create_event()
         phone_number = factories.VALID_PHONE_NUMBER
         first_monitor = factories.create_monitor_for_event(event=event, phone_number=phone_number)
-        second_monitor = factories.create_monitor_for_event(event=event, phone_number='+13106172186')
+        factories.create_monitor_for_event(event=event, phone_number='+13106172186')
 
         actual_monitor = monitor_service.get_created_monitor_for_phone_number(phone_number)
 
@@ -196,7 +192,7 @@ class GetCreatedMonitorForPhoneNumberTest(TestCase):
     def test_returns_none_if_monitor_exists_for_phone_number_but_does_not_have_created_status(self):
         event = factories.create_event()
         phone_number = factories.VALID_PHONE_NUMBER
-        monitor = factories.create_monitor_for_event(
+        factories.create_monitor_for_event(
             event=event,
             phone_number=phone_number,
             status=MONITOR_STATUS_ACTIVATED
@@ -233,7 +229,7 @@ class GetActivatedMonitorForPhoneNumberTest(TestCase):
             phone_number=phone_number,
             status=MONITOR_STATUS_ACTIVATED
         )
-        second_monitor = factories.create_monitor_for_event(
+        factories.create_monitor_for_event(
             event=event,
             phone_number='+13106172186',
             status=MONITOR_STATUS_ACTIVATED
@@ -246,7 +242,7 @@ class GetActivatedMonitorForPhoneNumberTest(TestCase):
     def test_returns_none_if_monitor_exists_for_phone_number_but_does_not_have_activated_status(self):
         event = factories.create_event()
         phone_number = factories.VALID_PHONE_NUMBER
-        monitor = factories.create_monitor_for_event(event=event, phone_number=phone_number)
+        factories.create_monitor_for_event(event=event, phone_number=phone_number)
 
         self.assertIsNone(monitor_service.get_activated_monitor_for_phone_number(phone_number))
 

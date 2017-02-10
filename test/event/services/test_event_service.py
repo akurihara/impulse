@@ -6,7 +6,7 @@ from django.test import TestCase
 from django.utils import timezone
 from freezegun import freeze_time
 
-from event.models import Event, EventPrice, VENDOR_TYPE_SEATGEEK
+from event.models import Event, VENDOR_TYPE_SEATGEEK
 from event.services import event_service
 from test import factories
 
@@ -73,7 +73,7 @@ class GetEventsStartingInNextTwentyFourHoursTest(TestCase):
 
     def test_does_not_return_monitor_for_past_event(self):
         one_second_ago = timezone.now() - timedelta(seconds=1)
-        event = factories.create_event(datetime_start=one_second_ago)
+        factories.create_event(datetime_start=one_second_ago)
 
         events = event_service.get_events_starting_in_next_twenty_four_hours()
 
@@ -81,7 +81,7 @@ class GetEventsStartingInNextTwentyFourHoursTest(TestCase):
 
     def test_does_not_return_monitor_for_event_more_than_twenty_four_hours_from_now(self):
         twenty_five_hours_from_now = timezone.now() + timedelta(hours=25)
-        event = factories.create_event(datetime_start=twenty_five_hours_from_now)
+        factories.create_event(datetime_start=twenty_five_hours_from_now)
 
         events = event_service.get_events_starting_in_next_twenty_four_hours()
 

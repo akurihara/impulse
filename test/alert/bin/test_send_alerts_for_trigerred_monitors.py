@@ -3,7 +3,6 @@ from decimal import Decimal
 from mock import ANY, patch
 import pytz
 
-from decimal import Decimal
 from django.test import TestCase
 from freezegun import freeze_time
 from twilio.rest.resources import Messages
@@ -11,8 +10,6 @@ from twilio.rest.resources import Messages
 from alert.constants import MONITOR_STATUS_ACTIVATED, OUTGOING_MESSAGE_MONITOR_TRIGGERED
 from alert.bin.send_alerts_for_triggered_monitors import main
 from event.lib.seatgeek_gateway import Event
-from event.models import VENDOR_TYPE_SEATGEEK
-from event.services import event_service
 from test import factories
 
 
@@ -46,7 +43,7 @@ class MainTest(TestCase):
     @freeze_time('2017-01-19 3:00')
     def test_does_not_send_sms_message_if_monitor_amount_is_higher_than_event_price(self):
         event = factories.create_event()
-        monitor = factories.create_monitor_for_event(
+        factories.create_monitor_for_event(
             event=event,
             amount=Decimal('64.99'),
             status=MONITOR_STATUS_ACTIVATED
@@ -62,7 +59,7 @@ class MainTest(TestCase):
     @freeze_time('2017-01-19 2:59')
     def test_does_not_send_sms_message_if_monitor_event_starts_in_more_than_twenty_four_hours(self):
         event = factories.create_event()
-        monitor = factories.create_monitor_for_event(
+        factories.create_monitor_for_event(
             event=event,
             amount=Decimal('65.01'),
             status=MONITOR_STATUS_ACTIVATED
@@ -78,7 +75,7 @@ class MainTest(TestCase):
     @freeze_time('2017-01-19 3:00')
     def test_does_not_send_sms_message_if_monitor_status_is_not_activated(self):
         event = factories.create_event()
-        monitor = factories.create_monitor_for_event(event)
+        factories.create_monitor_for_event(event)
         mock_seatgeek_event = _create_mock_seatgeek_event()
 
         with patch('alert.bin.send_alerts_for_triggered_monitors.get_event_by_id', return_value=mock_seatgeek_event):

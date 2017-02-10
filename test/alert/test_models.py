@@ -1,9 +1,6 @@
-from decimal import Decimal
-
 from django.test import TestCase
 
 from alert.models import MonitorStatus
-from alert.services import monitor_service
 from test import factories
 
 

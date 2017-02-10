@@ -1,10 +1,8 @@
-from datetime import datetime
 from decimal import Decimal
-import pytz
 
 from django.test import TestCase
 
-from event.models import Event, EventPrice, VENDOR_TYPE_SEATGEEK
+from event.models import EventPrice
 from event.services import event_service
 from test import factories
 

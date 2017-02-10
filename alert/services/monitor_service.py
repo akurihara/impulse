@@ -1,7 +1,6 @@
-from datetime import datetime, time, timedelta
 import os
 
-from django.db.models import Max, Prefetch
+from django.db.models import Max
 from twilio.rest import TwilioRestClient
 
 from alert.constants import (

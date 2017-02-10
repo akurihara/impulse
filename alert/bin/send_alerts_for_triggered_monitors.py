@@ -5,7 +5,6 @@ django.setup()
 from twilio.rest import TwilioRestClient
 
 from alert.constants import MONITOR_STATUS_ACTIVATED, OUTGOING_MESSAGE_MONITOR_TRIGGERED
-from alert.services import monitor_service
 from event.lib.seatgeek_gateway import get_event_by_id
 from event.services import event_service
 

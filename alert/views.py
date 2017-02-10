@@ -2,7 +2,6 @@ import json
 from decimal import Decimal
 
 from django.http import HttpResponse
-from django.shortcuts import render
 from django.views import View
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
@@ -26,10 +25,10 @@ class MonitorsHandler(View):
         phone_number = parameters['phone_number']
         amount = parameters['amount']
 
-        monitor = monitor_service.create_monitor_for_event(
+        monitor_service.create_monitor_for_event(
             event_id=event_id,
             phone_number=phone_number,
-            amount = Decimal(amount)
+            amount=Decimal(amount)
         )
 
         return HttpResponse(status=201)
