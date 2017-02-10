@@ -19,6 +19,9 @@ class Event(models.Model):
     datetime_created = models.DateTimeField(auto_now_add=True)
     datetime_updated = models.DateTimeField(auto_now=True)
 
+    def __unicode__(self):
+        return str(self.id)
+
     @property
     def current_price(self):
         return self.prices.latest()
@@ -34,3 +37,6 @@ class EventPrice(models.Model):
 
     datetime_created = models.DateTimeField(auto_now_add=True)
     datetime_updated = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return str(self.id)

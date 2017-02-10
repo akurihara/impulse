@@ -13,6 +13,9 @@ class Monitor(models.Model):
     datetime_created = models.DateTimeField(auto_now_add=True)
     datetime_updated = models.DateTimeField(auto_now=True)
 
+    def __unicode__(self):
+        return str(self.id)
+
     def get_absolute_url(self):
         return reverse('monitor-detail', kwargs={'pk': self.id})
 
@@ -31,3 +34,6 @@ class MonitorStatus(models.Model):
 
     datetime_created = models.DateTimeField(auto_now_add=True)
     datetime_updated = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return str(self.id)
