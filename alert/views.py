@@ -9,7 +9,9 @@ from django.views.generic.edit import CreateView
 
 from alert.constants import (
     INCOMING_MESSAGE_ACTIVATE_MONITOR,
-    INCOMING_MESSAGE_DEACTIVATE_MONITOR
+    INCOMING_MESSAGE_DEACTIVATE_MONITOR,
+    MONITOR_STATUS_ACTIVATED,
+    MONITOR_STATUS_DEACTIVATED
 )
 from alert.forms import MonitorForm
 from alert.models import Monitor
@@ -47,14 +49,16 @@ class IncomingSMSMessageView(View):
     def post(self, request):
         phone_number = request.POST['From']
         message = request.POST['Body'].strip()
+        monitor = monitor_service.get_created_monitor_for_phone_number(phone_number)
 
-        if message == INCOMING_MESSAGE_ACTIVATE_MONITOR:
-            monitor = get_created_monitor_for_phone_number(phone_number)
-            if monitor:
-                monitor_service.set_status_of_monitor(monitor, MONITOR_STATUS_ACTIVATED)
-        elif message == INCOMING_MESSAGE_DEACTIVATE_MONITOR:
-            monitor = get_activated_monitor_for_phone_number(phone_number)
-            if monitor:
-                monitor_service.set_status_of_monitor(monitor, MONITOR_STATUS_DEACTIVATED)
+        if monitor:
+            _update_monitor_status_from_message(monitor, message)
 
         return HttpResponse(status=200)
+
+
+def _update_monitor_status_from_message(monitor, message):
+    if message == INCOMING_MESSAGE_ACTIVATE_MONITOR:
+        monitor_service.set_status_of_monitor(monitor, MONITOR_STATUS_ACTIVATED)
+    elif message == INCOMING_MESSAGE_DEACTIVATE_MONITOR:
+        monitor_service.set_status_of_monitor(monitor, MONITOR_STATUS_DEACTIVATED)

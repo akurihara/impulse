@@ -10,7 +10,7 @@ from alert.views import CreateMonitorView, IncomingSMSMessageView, MonitorDetail
 urlpatterns = [
     url(r'^$', RedirectView.as_view(pattern_name='monitor-create')),
     url(r'^admin/', admin.site.urls),
-    url(r'^incoming-sms-message$', IncomingSMSMessageView.as_view()),
+    url(r'^incoming-sms-message$', IncomingSMSMessageView.as_view(), name='incoming-sms-message'),
     url(r'^monitor/add/$', CreateMonitorView.as_view(), name='monitor-create'),
     url(r'^monitor/(?P<pk>[0-9]+)/$', MonitorDetailView.as_view(), name='monitor-detail'),
     url(r'^monitors/', MonitorsHandler.as_view(), name='monitors'),
