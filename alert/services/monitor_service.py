@@ -11,6 +11,14 @@ from alert.constants import (
 )
 from alert.models import Monitor, MonitorStatus
 
+__all__ = [
+    'create_monitor_for_event',
+    'set_status_of_monitor',
+    'does_activated_or_created_monitor_exist_for_phone_number',
+    'get_created_monitor_for_phone_number',
+    'get_activated_monitor_for_phone_number'
+]
+
 
 def create_monitor_for_event(event, phone_number, amount):
     if does_activated_or_created_monitor_exist_for_phone_number(phone_number):
