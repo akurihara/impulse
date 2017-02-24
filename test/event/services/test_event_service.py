@@ -1,11 +1,13 @@
 from datetime import datetime, timedelta
 from decimal import Decimal
+from mock import patch
 import pytz
 
 from django.test import TestCase
 from django.utils import timezone
 from freezegun import freeze_time
 
+from event.lib.seatgeek_gateway import SeatGeekEvent
 from event.models import Event, VENDOR_TYPE_SEATGEEK
 from event.services import event_service
 from test import factories
@@ -98,3 +100,35 @@ class GetEventsStartingInNextTwentyFourHoursTest(TestCase):
         events = event_service.get_events_starting_in_next_twenty_four_hours()
 
         self.assertEqual(0, len(events))
+
+
+class FindOrCreateUpcomingEventsMatchingQueryTest(TestCase):
+
+    def test_creates_event_if_event_does_not_exist_with_seatgeek_event_id(self):
+        mock_seatgeek_event = _create_mock_seatgeek_event()
+
+        with patch('event.services.event_service.search_upcoming_events', return_value=[mock_seatgeek_event]):
+            upcoming_events = event_service.find_or_create_upcoming_events_matching_query('query')
+
+        self.assertEqual(1, len(upcoming_events))
+        self.assertTrue(Event.objects.filter(vendor_id=mock_seatgeek_event.id).exists())
+
+    def test_returns_existing_event_that_has_seatgeek_event_id(self):
+        event = factories.create_event()
+        mock_seatgeek_event = _create_mock_seatgeek_event()
+
+        with patch('event.services.event_service.search_upcoming_events', return_value=[mock_seatgeek_event]):
+            upcoming_events = event_service.find_or_create_upcoming_events_matching_query('query')
+
+        self.assertEqual(1, len(upcoming_events))
+        self.assertEqual(event.id, upcoming_events[0].id)
+
+
+def _create_mock_seatgeek_event():
+    return SeatGeekEvent(
+        id='3621831',
+        title='Purity Ring',
+        datetime_utc=datetime(2017, 1, 20, 3, 0, tzinfo=pytz.utc),
+        lowest_price=Decimal('65'),
+        url='https://seatgeek.com/purity-ring-21-tickets/brooklyn-new-york-output-2017-01-19-10-pm/concert/3621831'
+    )
