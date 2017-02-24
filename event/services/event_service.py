@@ -13,7 +13,9 @@ def create_event(vendor_id, vendor_type, title, datetime_start, price, url):
         vendor_id=vendor_id,
         vendor_type=vendor_type,
     )
-    create_event_price_for_event(event, price)
+
+    if price:
+        create_event_price_for_event(event, price)
 
     return event
 

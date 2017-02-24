@@ -38,6 +38,18 @@ class CreateEventTest(TestCase):
         self.assertEqual(1, event.prices.count())
         self.assertEqual(Decimal('65'), event.current_price.price)
 
+    def test_does_not_create_event_price_for_event_if_price_is_none(self):
+        event = event_service.create_event(
+            vendor_id='3621831',
+            vendor_type=VENDOR_TYPE_SEATGEEK,
+            title='Purity Ring',
+            datetime_start=datetime(2017, 1, 20, 3, 0, tzinfo=pytz.utc),
+            price=None,
+            url='https://seatgeek.com/purity-ring-21-tickets/brooklyn-new-york-output-2017-01-19-10-pm/concert/3621831'
+        )
+
+        self.assertEqual(0, event.prices.count())
+
 
 class CreateEventPriceForEventTest(TestCase):
 
