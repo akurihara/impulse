@@ -14,6 +14,10 @@ def main():
 
     for event in events:
         seatgeek_event = get_event_by_id(event.vendor_id)
+
+        if not seatgeek_event.lowest_price:
+            continue
+
         event_service.create_event_price_for_event(event, seatgeek_event.lowest_price)
 
         _check_for_triggered_monitors_and_send_alerts(event)

@@ -9,7 +9,7 @@ from twilio.rest.resources import Messages
 
 from alert.constants import MONITOR_STATUS_ACTIVATED, OUTGOING_MESSAGE_MONITOR_TRIGGERED
 from alert.bin.send_alerts_for_triggered_monitors import main
-from event.lib.seatgeek_gateway import Event
+from event.lib.seatgeek_gateway import SeatGeekEvent
 from test import factories
 
 
@@ -86,7 +86,7 @@ class MainTest(TestCase):
 
 
 def _create_mock_seatgeek_event():
-    return Event(
+    return SeatGeekEvent(
         id='3621831',
         title='Purity Ring',
         datetime_utc=datetime(2017, 1, 20, 3, 0, tzinfo=pytz.utc),
