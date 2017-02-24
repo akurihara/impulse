@@ -4,7 +4,12 @@ import django
 django.setup()
 from twilio.rest import TwilioRestClient
 
-from alert.constants import MONITOR_STATUS_ACTIVATED, OUTGOING_MESSAGE_MONITOR_TRIGGERED
+from alert.constants import (
+    MONITOR_STATUS_ACTIVATED,
+    MONITOR_STATUS_DEACTIVATED,
+    OUTGOING_MESSAGE_MONITOR_TRIGGERED
+)
+from alert.services import monitor_service
 from event.lib.seatgeek_gateway import get_event_by_id
 from event.services import event_service
 
@@ -27,6 +32,7 @@ def _check_for_triggered_monitors_and_send_alerts(event):
     for monitor in event.monitors.all():
         if _should_send_alert_to_user(event, monitor):
             _send_alert_to_user(event, monitor)
+            monitor_service.set_status_of_monitor(monitor, MONITOR_STATUS_DEACTIVATED)
 
 
 def _should_send_alert_to_user(event, monitor):

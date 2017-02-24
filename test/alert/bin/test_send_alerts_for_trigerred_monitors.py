@@ -7,7 +7,11 @@ from django.test import TestCase
 from freezegun import freeze_time
 from twilio.rest.resources import Messages
 
-from alert.constants import MONITOR_STATUS_ACTIVATED, OUTGOING_MESSAGE_MONITOR_TRIGGERED
+from alert.constants import (
+    MONITOR_STATUS_ACTIVATED,
+    MONITOR_STATUS_DEACTIVATED,
+    OUTGOING_MESSAGE_MONITOR_TRIGGERED
+)
 from alert.bin.send_alerts_for_triggered_monitors import main
 from event.lib.seatgeek_gateway import SeatGeekEvent
 from test import factories
@@ -83,6 +87,21 @@ class MainTest(TestCase):
                 main()
 
         twilio_mock.assert_not_called()
+
+    @freeze_time('2017-01-19 3:00')
+    def test_deactivates_triggered_monitor(self):
+        event = factories.create_event()
+        monitor = factories.create_monitor_for_event(
+            event=event,
+            amount=Decimal('65.01'),
+            status=MONITOR_STATUS_ACTIVATED
+        )
+        mock_seatgeek_event = _create_mock_seatgeek_event()
+
+        with patch('alert.bin.send_alerts_for_triggered_monitors.get_event_by_id', return_value=mock_seatgeek_event):
+            main()
+
+        self.assertEqual(MONITOR_STATUS_DEACTIVATED, monitor.current_status.status)
 
 
 def _create_mock_seatgeek_event():
