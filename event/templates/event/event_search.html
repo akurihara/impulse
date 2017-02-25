@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Impulse - Event Search
+{% endblock %}
+
+{% block content %}
+  {% if query %}
+    <div>You searched for: {{ query }} </div>
+  {% endif %}
+  <form method="get" action="/events/" class="navbar-form pull-right">
+    <input type="text" id="searchBox" class="input-medium search-query" name="q" placeholder="Search for events">
+    <input type="submit" class="btn" value="Search" >
+  </form>
+  <ul>
+  {% for event in events %}
+    <li>
+      <p>{{ event.title }}</p>
+      <p>{{ event.current_price.price }}</p>
+      <p>{{ event.url }}</p>
+    </li>
+  {% endfor %}
+  </ul>
+{% endblock %}
