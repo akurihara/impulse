@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Impulse - Event {{ event.id }}
+{% endblock %}
+
+{% block content %}
+  <div class="event-details">
+    <h1>{{ event.title }}</h1>
+    <p>Current Price: {{ event.current_price.price }}</p>
+    <p>Date: {{ event.datetime_start }}</p>
+    <p>URL: {{ event.url }}</p>
+  </div>
+  {% if monitor %}
+    <div class="monitor-details">
+      Tracking event with price ${{ monitor.amount }}
+    </div>
+  {% else %}
+    <div class="create-monitor">
+      Create a new price tracker
+    </div>
+  {% endif %}
+
+{% endblock %}

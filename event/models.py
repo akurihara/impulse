@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.urls import reverse
 
 VENDOR_TYPE_SEATGEEK = 0
 
@@ -21,6 +22,9 @@ class Event(models.Model):
 
     def __unicode__(self):
         return str(self.id)
+
+    def get_absolute_url(self):
+        return reverse('event-detail', kwargs={'pk': self.id})
 
     @property
     def current_price(self):
