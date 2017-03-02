@@ -2,16 +2,22 @@ from django.http import HttpResponse
 from django.template import Context, loader
 from django.views import View
 
+from alert.models import Monitor
 from event.models import Event
 from event.services import event_service
 
 
 class EventDetailView(View):
 
-    def get(self, request, event_id):
+    def get(self, request, event_id, monitor_id=None):
         template = loader.get_template('event/event_detail.html')
         event = Event.objects.get(id=event_id)
-        context = Context({'event': event})
+        if monitor_id:
+            monitor = Monitor.objects.get(id=monitor_id)
+        else:
+            monitor = None
+
+        context = Context({'event': event, 'monitor': monitor})
 
         return HttpResponse(template.render(context))
 

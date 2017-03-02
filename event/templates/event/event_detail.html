@@ -18,6 +18,12 @@
   {% else %}
     <div class="create-monitor">
       Create a new price tracker
+        <form method="post" action="/monitors/" class="navbar-form pull-right" />
+          <input type="tel" class="input-medium search-query" name="phone_number" placeholder="e.g. +12223334444" />
+          $<input type="number" name="amount" min="0" max="9999">
+          <input type="hidden" name="event_id" value={{ event.id }}>
+          <input type="submit" class="btn" value="Create Tracker" />
+        </form>
     </div>
   {% endif %}
 

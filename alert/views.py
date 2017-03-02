@@ -1,10 +1,6 @@
-import json
 from decimal import Decimal
-
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.views import View
-from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView
 
 from alert.constants import (
     INCOMING_MESSAGE_ACTIVATE_MONITOR,
@@ -13,34 +9,32 @@ from alert.constants import (
     MONITOR_STATUS_DEACTIVATED
 )
 from alert.forms import MonitorForm
-from alert.models import Monitor
 from alert.services import monitor_service
 
 
-class MonitorsHandler(View):
+class CreateMonitorView(View):
 
     def post(self, request):
-        parameters = json.loads(request.body)
-        event_id = parameters['event_id']
-        phone_number = parameters['phone_number']
-        amount = parameters['amount']
+        amount = request.POST['amount']
+        amount_as_decimal = Decimal(str(amount))
+        event_id = request.POST['event_id']
 
-        monitor_service.create_monitor_for_event(
-            event_id=event_id,
-            phone_number=phone_number,
-            amount=Decimal(amount)
-        )
+        monitor_data = {
+            'amount': amount_as_decimal,
+            'phone_number': request.POST['phone_number'],
+            'event_id': event_id
+        }
 
-        return HttpResponse(status=201)
+        form = MonitorForm(monitor_data)
+        if form.is_valid():
+            monitor = form.save()
 
+            redirect_url = '/events/{event_id}/monitors/{monitor_id}'.format(
+                event_id=monitor.event.id,
+                monitor_id=monitor.id
+            )
 
-class CreateMonitorView(CreateView):
-    form_class = MonitorForm
-    model = Monitor
-
-
-class MonitorDetailView(DetailView):
-    model = Monitor
+            return HttpResponseRedirect(redirect_url)
 
 
 class IncomingSMSMessageView(View):
