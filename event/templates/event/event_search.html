@@ -6,19 +6,36 @@
 
 {% block content %}
   {% if query %}
-    <div>You searched for: {{ query }} </div>
+    <div>
+      <h2>
+        Search results for "{{ query }}"
+      </h2>
+    </div>
+    <hr>
   {% endif %}
-  <form method="get" action="/events" class="navbar-form pull-right">
-    <input type="text" id="searchBox" class="input-medium search-query" name="q" placeholder="Search for events">
-    <input type="submit" class="btn" value="Search" >
-  </form>
-  <ul>
+  <div>
   {% for event in events %}
-    <li>
-      <a href="/events/{{ event.id }}">{{ event.title }}</a>
-      <p>{{ event.current_price.price }}</p>
-      <p>{{ event.url }}</p>
-    </li>
+    <div class="row">
+      <div class="col-md-8">
+        <h4>
+          <a href="/events/{{ event.id }}">{{ event.title }}</a>
+        </h4>
+        <p>{{ event.datetime_start }}</p>
+        {% if event.current_price.price %}
+          <p>Current Price: ${{ event.current_price.price }}</p>
+        {% else %}
+          <p>No price information available</p>
+        {% endif %}
+      </div>
+      <div class="col-md-4">
+        <a class="btn btn-default" href="{{ event.url }}" role="button" target="blank">
+          View on Seatgeek
+        </a>
+        <a class="btn btn-primary" href="/events/{{ event.id }}" role="button">
+          Track Price
+        </a>
+      </div>
+    </div>
   {% endfor %}
-  </ul>
+  </div>
 {% endblock %}
