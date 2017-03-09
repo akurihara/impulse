@@ -1,7 +1,4 @@
-import os
-
 from django.db.models import Max
-from twilio.rest import TwilioRestClient
 
 from alert.constants import (
     MONITOR_STATUSES,
@@ -9,6 +6,7 @@ from alert.constants import (
     MONITOR_STATUS_CREATED,
     OUTGOING_MESSAGE_MONITOR_CONFIRMATION
 )
+from alert.lib.twilio_gateway import send_sms_message
 from alert.models import Monitor, MonitorStatus
 
 __all__ = [
@@ -50,21 +48,10 @@ def set_status_of_monitor(monitor, status):
 
 
 def _send_monitor_confirmation_message(monitor, event):
-    twilio_number, twilio_account_sid, twilio_auth_token = _load_twilio_config()
-    twilio_client = TwilioRestClient(twilio_account_sid, twilio_auth_token)
-
     event_title = _format_event_title(event.title)
     message = OUTGOING_MESSAGE_MONITOR_CONFIRMATION.format(event_title=event_title)
 
-    twilio_client.messages.create(body=message, to=monitor.phone_number.as_e164, from_=twilio_number)
-
-
-def _load_twilio_config():
-    twilio_account_sid = os.environ.get('TWILIO_ACCOUNT_SID')
-    twilio_auth_token = os.environ.get('TWILIO_AUTH_TOKEN')
-    twilio_number = os.environ.get('TWILIO_NUMBER')
-
-    return twilio_number, twilio_account_sid, twilio_auth_token
+    send_sms_message(to_phone_number=monitor.phone_number.as_e164, message=message)
 
 
 def _format_event_title(title):

@@ -1,8 +1,7 @@
 from decimal import Decimal
-from mock import ANY, patch
+from mock import patch
 
 from django.test import TestCase
-from twilio.rest.resources import Messages
 
 from alert.constants import (
     MONITOR_STATUS_ACTIVATED,
@@ -43,8 +42,8 @@ class CreateMonitorForEventTest(TestCase):
         self.assertEqual(1, monitor.statuses.count())
         self.assertEqual(MONITOR_STATUS_CREATED, monitor.current_status.status)
 
-    @patch.object(Messages, 'create')
-    def test_sends_monitor_confirmation_message(self, twilio_mock):
+    @patch('alert.services.monitor_service.send_sms_message')
+    def test_sends_monitor_confirmation_message(self, send_sms_message_mock):
         event = factories.create_event()
 
         monitor_service.create_monitor_for_event(
@@ -53,11 +52,10 @@ class CreateMonitorForEventTest(TestCase):
             amount=Decimal('70')
         )
 
-        expected_body = OUTGOING_MESSAGE_MONITOR_CONFIRMATION.format(event_title=event.title)
-        twilio_mock.assert_called_once_with(
-            body=expected_body,
-            to=factories.VALID_PHONE_NUMBER,
-            from_=ANY
+        expected_message = OUTGOING_MESSAGE_MONITOR_CONFIRMATION.format(event_title=event.title)
+        send_sms_message_mock.assert_called_once_with(
+            to_phone_number=factories.VALID_PHONE_NUMBER,
+            message=expected_message
         )
 
     def test_raises_error_if_created_monitor_exists_for_phone_number(self):
