@@ -1,5 +1,6 @@
 import os
 
+from twilio import twiml
 from twilio.rest import TwilioRestClient
 
 
@@ -20,3 +21,10 @@ def _load_twilio_configuration():
     twilio_number = os.environ.get('TWILIO_NUMBER')
 
     return twilio_number, twilio_account_sid, twilio_auth_token
+
+
+def create_twiml_response(message):
+    twiml_response = twiml.Response()
+    twiml_response.message(message)
+
+    return twiml_response
