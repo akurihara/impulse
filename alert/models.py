@@ -7,7 +7,7 @@ from alert.constants import MONITOR_STATUSES
 
 class Monitor(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    external_id = models.CharField(max_length=10)
+    external_id = models.CharField(db_index=True, max_length=10)
     phone_number = PhoneNumberField()
     event = models.ForeignKey('event.Event', null=True, related_name='monitors')
 

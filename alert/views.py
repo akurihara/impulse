@@ -30,9 +30,9 @@ class CreateMonitorView(View):
         if form.is_valid():
             monitor = form.save()
 
-            redirect_url = '/events/{event_id}/monitors/{monitor_id}'.format(
-                event_id=monitor.event.id,
-                monitor_id=monitor.id
+            redirect_url = '/events/{event_external_id}/monitors/{monitor_external_id}'.format(
+                event_id=monitor.event.external_id,
+                monitor_id=monitor.external_id
             )
 
             return HttpResponseRedirect(redirect_url)

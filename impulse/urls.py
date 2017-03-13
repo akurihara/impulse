@@ -11,8 +11,11 @@ urlpatterns = [
     url(r'^$', RedirectView.as_view(pattern_name='events')),
     url(r'^admin/', admin.site.urls),
     url(r'^events$', EventSearchView.as_view(), name='events'),
-    url(r'^events/(?P<event_id>[0-9]+)$', EventDetailView.as_view(), name='event-detail'),
-    url(r'^events/(?P<event_id>[0-9]+)/monitors/(?P<monitor_id>[0-9]+)$', EventDetailView.as_view(), name='event-with-monitor-detail'),
+    url(r'^events/(?P<event_external_id>[a-z]+)$', EventDetailView.as_view(), name='event-detail'),
+    url(
+        r'^events/(?P<event_external_id>[a-z]+)/monitors/(?P<monitor_external_id>[a-z]+)$',
+        EventDetailView.as_view(), name='event-with-monitor-detail'
+    ),
     url(r'^incoming-sms-message$', IncomingSMSMessageView.as_view(), name='incoming-sms-message'),
     url(r'^monitors$', CreateMonitorView.as_view(), name='create-monitor'),
 ]

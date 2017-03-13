@@ -9,11 +9,11 @@ from event.services import event_service
 
 class EventDetailView(View):
 
-    def get(self, request, event_id, monitor_id=None):
+    def get(self, request, event_external_id, monitor_external_id=None):
         template = loader.get_template('event/event_detail.html')
-        event = Event.objects.get(id=event_id)
-        if monitor_id:
-            monitor = Monitor.objects.get(id=monitor_id)
+        event = Event.objects.get(external_id=event_external_id)
+        if monitor_external_id:
+            monitor = Monitor.objects.get(external_id=monitor_external_id)
         else:
             monitor = None
 
