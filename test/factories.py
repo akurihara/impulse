@@ -9,6 +9,7 @@ from event.models import VENDOR_TYPE_SEATGEEK
 from event.services import event_service
 
 VALID_PHONE_NUMBER = '+15005550006'
+PURITY_RING_EVENT_URL = 'https://seatgeek.com/purity-ring-21-tickets/brooklyn-new-york-output-2017-01-19-10-pm/concert/3621831'
 
 
 def create_event(datetime_start=None):
@@ -20,7 +21,7 @@ def create_event(datetime_start=None):
         title='Purity Ring',
         datetime_start=datetime_start,
         price=Decimal('65'),
-        url='https://seatgeek.com/purity-ring-21-tickets/brooklyn-new-york-output-2017-01-19-10-pm/concert/3621831'
+        url=PURITY_RING_EVENT_URL
     )
 
 

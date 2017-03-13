@@ -4,6 +4,7 @@ from django.utils import timezone
 
 from event.lib.seatgeek_gateway import search_upcoming_events
 from event.models import Event, EventPrice, VENDOR_TYPE_SEATGEEK
+from impulse.utils import generate_external_id
 
 __all__ = [
     'create_event',
@@ -22,10 +23,17 @@ def create_event(vendor_id, vendor_type, title, datetime_start, price, url):
         vendor_type=vendor_type,
     )
 
+    _update_event_with_external_id(event)
+
     if price:
         create_event_price_for_event(event, price)
 
     return event
+
+
+def _update_event_with_external_id(event):
+    event.external_id = generate_external_id(event.id)
+    event.save()
 
 
 def create_event_price_for_event(event, price):

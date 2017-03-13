@@ -29,6 +29,7 @@ class CreateMonitorForEventTest(TestCase):
         self.assertEqual(Decimal('70'), monitor.amount)
         self.assertEqual(factories.VALID_PHONE_NUMBER, monitor.phone_number.as_e164)
         self.assertEqual(event.id, monitor.event_id)
+        self.assertRegexpMatches(monitor.external_id, '^[a-z]{5,10}$')
 
     def test_sets_created_status_for_monitor(self):
         event = factories.create_event()

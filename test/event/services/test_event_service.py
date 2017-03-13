@@ -22,10 +22,16 @@ class CreateEventTest(TestCase):
             title='Purity Ring',
             datetime_start=datetime(2017, 1, 20, 3, 0, tzinfo=pytz.utc),
             price=Decimal('65'),
-            url='https://seatgeek.com/purity-ring-21-tickets/brooklyn-new-york-output-2017-01-19-10-pm/concert/3621831'
+            url=factories.PURITY_RING_EVENT_URL
         )
 
         self.assertTrue(Event.objects.filter(id=event.id).exists())
+        self.assertEqual('3621831', event.vendor_id)
+        self.assertEqual(VENDOR_TYPE_SEATGEEK, event.vendor_type)
+        self.assertEqual('Purity Ring', event.title)
+        self.assertEqual(factories.PURITY_RING_EVENT_URL, event.url)
+        self.assertEqual(datetime(2017, 1, 20, 3, 0, tzinfo=pytz.utc), event.datetime_start)
+        self.assertRegexpMatches(event.external_id, '^[a-z]{5,10}$')
 
     def test_creates_event_price_for_event(self):
         event = event_service.create_event(

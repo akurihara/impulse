@@ -8,6 +8,7 @@ from alert.constants import (
 )
 from alert.lib.twilio_gateway import send_sms_message
 from alert.models import Monitor, MonitorStatus
+from impulse.utils import generate_external_id
 
 __all__ = [
     'create_monitor_for_event',
@@ -27,6 +28,9 @@ def create_monitor_for_event(event, phone_number, amount):
         phone_number=phone_number,
         event=event
     )
+
+    _update_monitor_with_external_id(monitor)
+
     MonitorStatus.objects.create(
         monitor=monitor,
         status=MONITOR_STATUS_CREATED
@@ -37,6 +41,18 @@ def create_monitor_for_event(event, phone_number, amount):
     return monitor
 
 
+def _update_monitor_with_external_id(monitor):
+    monitor.external_id = generate_external_id(monitor.id)
+    monitor.save()
+
+
+def _send_monitor_confirmation_message(monitor, event):
+    event_title = _format_event_title(event.title)
+    message = OUTGOING_MESSAGE_MONITOR_CONFIRMATION.format(event_title=event_title)
+
+    send_sms_message(to_phone_number=monitor.phone_number.as_e164, message=message)
+
+
 def set_status_of_monitor(monitor, status):
     if status not in MONITOR_STATUSES:
         raise ValueError('Status must be one of {}'.format(MONITOR_STATUSES))
@@ -45,13 +61,6 @@ def set_status_of_monitor(monitor, status):
         monitor=monitor,
         status=status
     )
-
-
-def _send_monitor_confirmation_message(monitor, event):
-    event_title = _format_event_title(event.title)
-    message = OUTGOING_MESSAGE_MONITOR_CONFIRMATION.format(event_title=event_title)
-
-    send_sms_message(to_phone_number=monitor.phone_number.as_e164, message=message)
 
 
 def _format_event_title(title):
