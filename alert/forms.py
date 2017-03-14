@@ -1,4 +1,11 @@
 from django import forms
+from django.core.exceptions import ValidationError
+from phonenumbers import (
+    format_number,
+    is_valid_number,
+    parse,
+    PhoneNumberFormat
+)
 
 from alert.services import monitor_service
 from event.models import Event
@@ -7,14 +14,16 @@ from event.models import Event
 class MonitorForm(forms.Form):
     amount = forms.DecimalField()
     phone_number = forms.CharField(max_length=100)
-    event_id = forms.CharField(max_length=100)
+    event = forms.ModelChoiceField(queryset=Event.objects.all())
 
-    def clean_event_id(self):
-        event_id = self.cleaned_data['event_id']
-        event = Event.objects.get(id=event_id)
-        self.cleaned_data['event'] = event
+    def clean_phone_number(self):
+        phone_number = self.cleaned_data['phone_number']
+        parsed_phone_number = parse(phone_number, 'US')
 
-        return event_id
+        if not is_valid_number(parsed_phone_number):
+            raise ValidationError('Enter a valid phone number.')
+
+        return format_number(parsed_phone_number, PhoneNumberFormat.E164)
 
     def save(form):
         cleaned_data = form.cleaned_data

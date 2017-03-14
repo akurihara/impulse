@@ -15,27 +15,7 @@
   {% endif %}
   <div>
   {% for event in events %}
-    <div class="row">
-      <div class="col-md-8">
-        <h4>
-          <a href="/events/{{ event.external_id }}">{{ event.title }}</a>
-        </h4>
-        <p>{{ event.datetime_start }}</p>
-        {% if event.current_price.price %}
-          <p>Current Price: ${{ event.current_price.price }}</p>
-        {% else %}
-          <p>No price information available</p>
-        {% endif %}
-      </div>
-      <div class="col-md-4">
-        <a class="btn btn-default" href="{{ event.url }}" role="button" target="blank">
-          View on Seatgeek
-        </a>
-        <a class="btn btn-primary" href="/events/{{ event.external_id }}" role="button">
-          Track Price
-        </a>
-      </div>
-    </div>
+    {% include "./event_search_result.html" %}
   {% endfor %}
   </div>
 {% endblock %}

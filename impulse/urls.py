@@ -13,11 +13,14 @@ urlpatterns = [
     url(r'^events$', EventSearchView.as_view(), name='events'),
     url(r'^events/(?P<event_external_id>[a-z]+)$', EventDetailView.as_view(), name='event-detail'),
     url(
+        r'^events/(?P<event_external_id>[a-z]+)/monitors$',
+        CreateMonitorView.as_view(), name='create-monitor'
+    ),
+    url(
         r'^events/(?P<event_external_id>[a-z]+)/monitors/(?P<monitor_external_id>[a-z]+)$',
         EventDetailView.as_view(), name='event-with-monitor-detail'
     ),
     url(r'^incoming-sms-message$', IncomingSMSMessageView.as_view(), name='incoming-sms-message'),
-    url(r'^monitors$', CreateMonitorView.as_view(), name='create-monitor'),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

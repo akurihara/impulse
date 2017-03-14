@@ -1,5 +1,6 @@
 from decimal import Decimal
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
+from django.template import Context, loader
 from django.views import View
 
 from alert.constants import (
@@ -11,31 +12,31 @@ from alert.constants import (
 from alert.forms import MonitorForm
 from alert.lib.twilio_gateway import create_twiml_response
 from alert.services import monitor_service
+from event.models import Event
 
 
 class CreateMonitorView(View):
 
-    def post(self, request):
+    def post(self, request, event_external_id):
         amount = request.POST['amount']
         amount_as_decimal = Decimal(str(amount))
-        event_id = request.POST['event_id']
-
+        event = Event.objects.get(external_id=event_external_id)
         monitor_data = {
             'amount': amount_as_decimal,
             'phone_number': request.POST['phone_number'],
-            'event_id': event_id
+            'event': event.id
         }
 
         form = MonitorForm(monitor_data)
+
         if form.is_valid():
             monitor = form.save()
 
-            redirect_url = '/events/{event_external_id}/monitors/{monitor_external_id}'.format(
-                event_id=monitor.event.external_id,
-                monitor_id=monitor.external_id
-            )
+            template = loader.get_template('event/event_detail.html')
 
-            return HttpResponseRedirect(redirect_url)
+            context = Context({'event': event, 'monitor': monitor})
+
+            return HttpResponse(template.render(context))
 
 
 class IncomingSMSMessageView(View):
