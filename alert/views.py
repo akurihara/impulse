@@ -1,5 +1,4 @@
-from decimal import Decimal
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template import Context, loader
 from django.views import View
 
@@ -18,11 +17,9 @@ from event.models import Event
 class CreateMonitorView(View):
 
     def post(self, request, event_external_id):
-        amount = request.POST['amount']
-        amount_as_decimal = Decimal(str(amount))
         event = Event.objects.get(external_id=event_external_id)
         monitor_data = {
-            'amount': amount_as_decimal,
+            'amount': request.POST['amount'],
             'phone_number': request.POST['phone_number'],
             'event': event.id
         }
@@ -32,11 +29,19 @@ class CreateMonitorView(View):
         if form.is_valid():
             monitor = form.save()
 
+            redirect_url = '/events/{event_external_id}/monitors/{monitor_external_id}'.format(
+                event_id=monitor.event.external_id,
+                monitor_id=monitor.external_id
+            )
+
+            http_response = HttpResponseRedirect(redirect_url)
+        else:
             template = loader.get_template('event/event_detail.html')
+            context = Context({'event': event, 'errors': form.errors})
 
-            context = Context({'event': event, 'monitor': monitor})
+            http_response = HttpResponse(template.render(context))
 
-            return HttpResponse(template.render(context))
+        return http_response
 
 
 class IncomingSMSMessageView(View):

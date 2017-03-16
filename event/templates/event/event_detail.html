@@ -20,7 +20,13 @@
       Create a new price tracker
         <form method="post" action="/events/{{ event.external_id }}/monitors" class="navbar-form pull-right" />
           <input type="tel" class="input-medium search-query" name="phone_number" placeholder="e.g. +12223334444" />
+          {% if errors.phone_number %}
+            {{ errors.phone_number }}
+          {% endif %}
           $<input type="number" name="amount" min="0" max="9999">
+          {% if errors.amount %}
+            {{ errors.amount }}
+          {% endif %}
           <input type="submit" class="btn" value="Create Tracker" />
         </form>
     </div>
