@@ -17,6 +17,7 @@ class Event(models.Model):
     url = models.URLField(max_length=255)
     vendor_id = models.CharField(max_length=10)
     vendor_type = models.PositiveSmallIntegerField(choices=VENDOR_TYPES.items())
+    venue = models.ForeignKey('Venue', related_name='events', null=True)
 
     datetime_created = models.DateTimeField(auto_now_add=True)
     datetime_updated = models.DateTimeField(auto_now=True)
@@ -39,6 +40,25 @@ class EventPrice(models.Model):
 
     event = models.ForeignKey('Event', related_name='prices')
     price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    datetime_created = models.DateTimeField(auto_now_add=True)
+    datetime_updated = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return str(self.id)
+
+
+class Venue(models.Model):
+
+    class Meta:
+        get_latest_by = 'id'
+
+    name = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    state = models.CharField(max_length=2)
+    country = models.CharField(max_length=2)
+    vendor_id = models.CharField(max_length=10)
+    vendor_type = models.PositiveSmallIntegerField(choices=VENDOR_TYPES.items())
 
     datetime_created = models.DateTimeField(auto_now_add=True)
     datetime_updated = models.DateTimeField(auto_now=True)
