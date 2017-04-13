@@ -12,8 +12,18 @@ from alert.constants import (
     OUTGOING_MESSAGE_MONITOR_TRIGGERED
 )
 from alert.bin.send_alerts_for_triggered_monitors import main
-from event.lib.seatgeek_gateway import SeatGeekEvent
+from event.lib.seatgeek_gateway import SeatGeekEvent, SeatGeekVenue
 from test import factories
+
+
+def _create_mock_seatgeek_venue():
+    return SeatGeekVenue(
+        id='814',
+        name='Terminal 5',
+        city='New York',
+        state='NY',
+        country='US'
+    )
 
 
 def _create_mock_seatgeek_event():
@@ -22,7 +32,8 @@ def _create_mock_seatgeek_event():
         title='Purity Ring',
         datetime_utc=datetime(2017, 1, 20, 3, 0, tzinfo=pytz.utc),
         lowest_price=Decimal('65'),
-        url='https://seatgeek.com/purity-ring-21-tickets/brooklyn-new-york-output-2017-01-19-10-pm/concert/3621831'
+        url='https://seatgeek.com/purity-ring-21-tickets/brooklyn-new-york-output-2017-01-19-10-pm/concert/3621831',
+        venue=_create_mock_seatgeek_venue()
     )
 
 

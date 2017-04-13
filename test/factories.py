@@ -5,7 +5,7 @@ from decimal import Decimal
 import pytz
 
 from alert.services import monitor_service
-from event.models import VENDOR_TYPE_SEATGEEK
+from event.models import VENDOR_TYPE_SEATGEEK, Venue
 from event.services import event_service
 
 VALID_PHONE_NUMBER = '+15005550006'
@@ -21,7 +21,8 @@ def create_event(datetime_start=None):
         title='Purity Ring',
         datetime_start=datetime_start,
         price=Decimal('65'),
-        url=PURITY_RING_EVENT_URL
+        url=PURITY_RING_EVENT_URL,
+        venue=create_venue()
     )
 
 
@@ -39,3 +40,14 @@ def create_monitor_for_event(event, amount=None, phone_number=None, status=None)
         monitor_service.set_status_of_monitor(monitor, status)
 
     return monitor
+
+
+def create_venue():
+    return Venue.objects.create(
+        name='Terminal 5',
+        city='New York',
+        state='NY',
+        country='US',
+        vendor_id='814',
+        vendor_type=VENDOR_TYPE_SEATGEEK
+    )

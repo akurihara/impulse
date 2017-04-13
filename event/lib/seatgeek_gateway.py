@@ -13,7 +13,15 @@ SEATGEEK_DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S'
 SEATGEEK_CLIENT_ID = os.environ.get('SEATGEEK_CLIENT_ID')
 SEATGEEK_CLIENT_SECRET = os.environ.get('SEATGEEK_CLIENT_SECRET')
 
-SeatGeekEvent = namedtuple('Event', ['id', 'title', 'datetime_utc', 'lowest_price', 'url'])
+SeatGeekEvent = namedtuple(
+    'SeatGeekEvent',
+    ['id', 'title', 'datetime_utc', 'lowest_price', 'url', 'venue']
+)
+
+SeatGeekVenue = namedtuple(
+    'SeatGeekVenue',
+    ['id', 'name', 'city', 'state', 'country']
+)
 
 
 def get_event_by_id(event_id):
@@ -34,13 +42,15 @@ def _get_seatgeek_event_tuple_from_event_data(event_data):
     datetime_utc = datetime.datetime.strptime(event_data['datetime_utc'], SEATGEEK_DATETIME_FORMAT)
     localized_datetime_utc = pytz.utc.localize(datetime_utc)
     lowest_price = _get_lowest_price_from_event_data(event_data)
+    seatgeek_venue = _get_seatgeek_venue_from_seatgeek_event(event_data)
 
     return SeatGeekEvent(
         id=event_data['id'],
         title=event_data['short_title'],
         datetime_utc=localized_datetime_utc,
         lowest_price=lowest_price,
-        url=event_data['url']
+        url=event_data['url'],
+        venue=seatgeek_venue
     )
 
 
@@ -48,6 +58,18 @@ def _get_lowest_price_from_event_data(event_data):
     lowest_price = event_data['stats']['lowest_price']
 
     return Decimal(lowest_price) if lowest_price else None
+
+
+def _get_seatgeek_venue_from_seatgeek_event(seatgeek_event):
+    venue_data = seatgeek_event['venue']
+
+    return SeatGeekVenue(
+        id=venue_data['id'],
+        name=venue_data['name'],
+        city=venue_data['city'],
+        state=venue_data['state'],
+        country=venue_data['country']
+    )
 
 
 def search_upcoming_events(query):

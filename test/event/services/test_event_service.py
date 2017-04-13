@@ -7,8 +7,8 @@ from django.test import TestCase
 from django.utils import timezone
 from freezegun import freeze_time
 
-from event.lib.seatgeek_gateway import SeatGeekEvent
-from event.models import Event, VENDOR_TYPE_SEATGEEK
+from event.lib.seatgeek_gateway import SeatGeekEvent, SeatGeekVenue
+from event.models import Event, VENDOR_TYPE_SEATGEEK, Venue
 from event.services import event_service
 from test import factories
 
@@ -16,13 +16,15 @@ from test import factories
 class CreateEventTest(TestCase):
 
     def test_creates_new_event(self):
+        venue = factories.create_venue()
         event = event_service.create_event(
             vendor_id='3621831',
             vendor_type=VENDOR_TYPE_SEATGEEK,
             title='Purity Ring',
             datetime_start=datetime(2017, 1, 20, 3, 0, tzinfo=pytz.utc),
             price=Decimal('65'),
-            url=factories.PURITY_RING_EVENT_URL
+            url=factories.PURITY_RING_EVENT_URL,
+            venue=venue
         )
 
         self.assertTrue(Event.objects.filter(id=event.id).exists())
@@ -31,29 +33,34 @@ class CreateEventTest(TestCase):
         self.assertEqual('Purity Ring', event.title)
         self.assertEqual(factories.PURITY_RING_EVENT_URL, event.url)
         self.assertEqual(datetime(2017, 1, 20, 3, 0, tzinfo=pytz.utc), event.datetime_start)
+        self.assertEqual(venue.id, event.venue_id)
         self.assertRegexpMatches(event.external_id, '^[a-z]{5,10}$')
 
     def test_creates_event_price_for_event(self):
+        venue = factories.create_venue()
         event = event_service.create_event(
             vendor_id='3621831',
             vendor_type=VENDOR_TYPE_SEATGEEK,
             title='Purity Ring',
             datetime_start=datetime(2017, 1, 20, 3, 0, tzinfo=pytz.utc),
             price=Decimal('65'),
-            url='https://seatgeek.com/purity-ring-21-tickets/brooklyn-new-york-output-2017-01-19-10-pm/concert/3621831'
+            url='https://seatgeek.com/purity-ring-21-tickets/brooklyn-new-york-output-2017-01-19-10-pm/concert/3621831',
+            venue=venue
         )
 
         self.assertEqual(1, event.prices.count())
         self.assertEqual(Decimal('65'), event.current_price.price)
 
     def test_does_not_create_event_price_for_event_if_price_is_none(self):
+        venue = factories.create_venue()
         event = event_service.create_event(
             vendor_id='3621831',
             vendor_type=VENDOR_TYPE_SEATGEEK,
             title='Purity Ring',
             datetime_start=datetime(2017, 1, 20, 3, 0, tzinfo=pytz.utc),
             price=None,
-            url='https://seatgeek.com/purity-ring-21-tickets/brooklyn-new-york-output-2017-01-19-10-pm/concert/3621831'
+            url='https://seatgeek.com/purity-ring-21-tickets/brooklyn-new-york-output-2017-01-19-10-pm/concert/3621831',
+            venue=venue
         )
 
         self.assertEqual(0, event.prices.count())
@@ -130,11 +137,40 @@ class FindOrCreateUpcomingEventsMatchingQueryTest(TestCase):
         self.assertEqual(event.id, upcoming_events[0].id)
 
 
+class FindOrCreateVenueTest(TestCase):
+
+    def test_creates_venue_if_venue_does_not_exist_with_seatgeek_venue_id(self):
+        mock_seatgeek_venue = _create_mock_seatgeek_venue()
+
+        event_service.find_or_create_venue(mock_seatgeek_venue)
+
+        self.assertTrue(Venue.objects.filter(vendor_id=mock_seatgeek_venue.id).exists())
+
+    def test_returns_existing_venue_that_has_seatgeek_venue_id(self):
+        existing_venue = factories.create_venue()
+        mock_seatgeek_venue = _create_mock_seatgeek_venue()
+
+        actual_venue = event_service.find_or_create_venue(mock_seatgeek_venue)
+
+        self.assertTrue(existing_venue.id, actual_venue.id)
+
+
 def _create_mock_seatgeek_event():
     return SeatGeekEvent(
         id='3621831',
         title='Purity Ring',
         datetime_utc=datetime(2017, 1, 20, 3, 0, tzinfo=pytz.utc),
         lowest_price=Decimal('65'),
-        url='https://seatgeek.com/purity-ring-21-tickets/brooklyn-new-york-output-2017-01-19-10-pm/concert/3621831'
+        url='https://seatgeek.com/purity-ring-21-tickets/brooklyn-new-york-output-2017-01-19-10-pm/concert/3621831',
+        venue=_create_mock_seatgeek_venue()
+    )
+
+
+def _create_mock_seatgeek_venue():
+    return SeatGeekVenue(
+        id='814',
+        name='Terminal 5',
+        city='New York',
+        state='NY',
+        country='US'
     )
