@@ -1,29 +1,25 @@
 from __future__ import absolute_import
 
-from datetime import datetime
 from decimal import Decimal
-import pytz
 
 from alert.services import monitor_service
-from event.models import VENDOR_TYPE_SEATGEEK, Venue
+from event.lib.seatgeek_gateway import SeatGeekEvent, SeatGeekVenue
+from event.models import Venue
 from event.services import event_service
+from test.fixtures import PURITY_RING_EVENT, PURITY_RING_SEATGEEK_EVENT, TERMINAL_5_VENUE, TERMINAL_5_SEATGEEK_VENUE
 
 VALID_PHONE_NUMBER = '+15005550006'
 PURITY_RING_EVENT_URL = 'https://seatgeek.com/purity-ring-21-tickets/brooklyn-new-york-output-2017-01-19-10-pm/concert/3621831'
 
 
 def create_event(datetime_start=None):
-    datetime_start = datetime_start or datetime(2017, 1, 20, 3, 0, tzinfo=pytz.utc)
+    event_fixture = PURITY_RING_EVENT.copy()
 
-    return event_service.create_event(
-        vendor_id='3621831',
-        vendor_type=VENDOR_TYPE_SEATGEEK,
-        title='Purity Ring',
-        datetime_start=datetime_start,
-        price=Decimal('65'),
-        url=PURITY_RING_EVENT_URL,
-        venue=create_venue()
-    )
+    event_fixture['venue'] = create_venue()
+    if datetime_start:
+        event_fixture['datetime_start'] = datetime_start
+
+    return event_service.create_event(**event_fixture)
 
 
 def create_monitor_for_event(event, amount=None, phone_number=None, status=None):
@@ -43,11 +39,18 @@ def create_monitor_for_event(event, amount=None, phone_number=None, status=None)
 
 
 def create_venue():
-    return Venue.objects.create(
-        name='Terminal 5',
-        city='New York',
-        state='NY',
-        country='US',
-        vendor_id='814',
-        vendor_type=VENDOR_TYPE_SEATGEEK
-    )
+    venue_fixture = TERMINAL_5_VENUE.copy()
+
+    return Venue.objects.create(**venue_fixture)
+
+
+def create_seatgeek_event():
+    seatgeek_venue = create_seatgeek_venue()
+    seatgeek_event_fixture = PURITY_RING_SEATGEEK_EVENT.copy()
+    seatgeek_event_fixture['venue'] = seatgeek_venue
+
+    return SeatGeekEvent(**seatgeek_event_fixture)
+
+
+def create_seatgeek_venue():
+    return SeatGeekVenue(**TERMINAL_5_SEATGEEK_VENUE)

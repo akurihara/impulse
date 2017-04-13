@@ -1,8 +1,5 @@
-from datetime import datetime
 from decimal import Decimal
 from mock import patch
-import pytz
-
 from django.test import TestCase
 from freezegun import freeze_time
 
@@ -12,32 +9,10 @@ from alert.constants import (
     OUTGOING_MESSAGE_MONITOR_TRIGGERED
 )
 from alert.bin.send_alerts_for_triggered_monitors import main
-from event.lib.seatgeek_gateway import SeatGeekEvent, SeatGeekVenue
 from test import factories
 
 
-def _create_mock_seatgeek_venue():
-    return SeatGeekVenue(
-        id='814',
-        name='Terminal 5',
-        city='New York',
-        state='NY',
-        country='US'
-    )
-
-
-def _create_mock_seatgeek_event():
-    return SeatGeekEvent(
-        id='3621831',
-        title='Purity Ring',
-        datetime_utc=datetime(2017, 1, 20, 3, 0, tzinfo=pytz.utc),
-        lowest_price=Decimal('65'),
-        url='https://seatgeek.com/purity-ring-21-tickets/brooklyn-new-york-output-2017-01-19-10-pm/concert/3621831',
-        venue=_create_mock_seatgeek_venue()
-    )
-
-
-@patch('alert.bin.send_alerts_for_triggered_monitors.get_event_by_id', return_value=_create_mock_seatgeek_event())
+@patch('alert.bin.send_alerts_for_triggered_monitors.get_event_by_id', return_value=factories.create_seatgeek_event())
 class MainTest(TestCase):
 
     @freeze_time('2017-01-19 3:00')

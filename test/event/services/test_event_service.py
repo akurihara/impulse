@@ -7,10 +7,9 @@ from django.test import TestCase
 from django.utils import timezone
 from freezegun import freeze_time
 
-from event.lib.seatgeek_gateway import SeatGeekEvent, SeatGeekVenue
 from event.models import Event, VENDOR_TYPE_SEATGEEK, Venue
 from event.services import event_service
-from test import factories
+from test import factories, fixtures
 
 
 class CreateEventTest(TestCase):
@@ -23,7 +22,7 @@ class CreateEventTest(TestCase):
             title='Purity Ring',
             datetime_start=datetime(2017, 1, 20, 3, 0, tzinfo=pytz.utc),
             price=Decimal('65'),
-            url=factories.PURITY_RING_EVENT_URL,
+            url=fixtures.PURITY_RING_EVENT_URL,
             venue=venue
         )
 
@@ -31,7 +30,7 @@ class CreateEventTest(TestCase):
         self.assertEqual('3621831', event.vendor_id)
         self.assertEqual(VENDOR_TYPE_SEATGEEK, event.vendor_type)
         self.assertEqual('Purity Ring', event.title)
-        self.assertEqual(factories.PURITY_RING_EVENT_URL, event.url)
+        self.assertEqual(fixtures.PURITY_RING_EVENT_URL, event.url)
         self.assertEqual(datetime(2017, 1, 20, 3, 0, tzinfo=pytz.utc), event.datetime_start)
         self.assertEqual(venue.id, event.venue_id)
         self.assertRegexpMatches(event.external_id, '^[a-z]{5,10}$')
@@ -118,7 +117,7 @@ class GetEventsStartingInNextTwentyFourHoursTest(TestCase):
 class FindOrCreateUpcomingEventsMatchingQueryTest(TestCase):
 
     def test_creates_event_if_event_does_not_exist_with_seatgeek_event_id(self):
-        mock_seatgeek_event = _create_mock_seatgeek_event()
+        mock_seatgeek_event = factories.create_seatgeek_event()
 
         with patch('event.services.event_service.search_upcoming_events', return_value=[mock_seatgeek_event]):
             upcoming_events = event_service.find_or_create_upcoming_events_matching_query('query')
@@ -128,7 +127,7 @@ class FindOrCreateUpcomingEventsMatchingQueryTest(TestCase):
 
     def test_returns_existing_event_that_has_seatgeek_event_id(self):
         event = factories.create_event()
-        mock_seatgeek_event = _create_mock_seatgeek_event()
+        mock_seatgeek_event = factories.create_seatgeek_event()
 
         with patch('event.services.event_service.search_upcoming_events', return_value=[mock_seatgeek_event]):
             upcoming_events = event_service.find_or_create_upcoming_events_matching_query('query')
@@ -140,7 +139,7 @@ class FindOrCreateUpcomingEventsMatchingQueryTest(TestCase):
 class FindOrCreateVenueTest(TestCase):
 
     def test_creates_venue_if_venue_does_not_exist_with_seatgeek_venue_id(self):
-        mock_seatgeek_venue = _create_mock_seatgeek_venue()
+        mock_seatgeek_venue = factories.create_seatgeek_venue()
 
         event_service.find_or_create_venue(mock_seatgeek_venue)
 
@@ -148,29 +147,8 @@ class FindOrCreateVenueTest(TestCase):
 
     def test_returns_existing_venue_that_has_seatgeek_venue_id(self):
         existing_venue = factories.create_venue()
-        mock_seatgeek_venue = _create_mock_seatgeek_venue()
+        mock_seatgeek_venue = factories.create_seatgeek_venue()
 
         actual_venue = event_service.find_or_create_venue(mock_seatgeek_venue)
 
         self.assertTrue(existing_venue.id, actual_venue.id)
-
-
-def _create_mock_seatgeek_event():
-    return SeatGeekEvent(
-        id='3621831',
-        title='Purity Ring',
-        datetime_utc=datetime(2017, 1, 20, 3, 0, tzinfo=pytz.utc),
-        lowest_price=Decimal('65'),
-        url='https://seatgeek.com/purity-ring-21-tickets/brooklyn-new-york-output-2017-01-19-10-pm/concert/3621831',
-        venue=_create_mock_seatgeek_venue()
-    )
-
-
-def _create_mock_seatgeek_venue():
-    return SeatGeekVenue(
-        id='814',
-        name='Terminal 5',
-        city='New York',
-        state='NY',
-        country='US'
-    )
