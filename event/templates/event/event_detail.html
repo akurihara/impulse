@@ -7,28 +7,43 @@
 {% block content %}
   <div class="event-details">
     <h1>{{ event.title }}</h1>
-    <p>Current Price: {{ event.current_price.price }}</p>
-    <p>Date: {{ event.datetime_start }}</p>
-    <p>URL: {{ event.url }}</p>
+    <p>{{ event.venue.name }}, {{ event.venue.city }}, {{ event.venue.state }}</p>
+    <p>{{ event.datetime_start }}</p>
+    <p>Current Price: ${{ event.current_price.price }}</p>
   </div>
   {% if monitor %}
     <div class="monitor-details">
-      Tracking event with price ${{ monitor.amount }}
+      <h2>You're tracking this event</h2>
+      <p>An alert will be sent to {{ monitor.phone_number }} when the price drops below ${{ monitor.amount }}.</p>
     </div>
   {% else %}
     <div class="create-monitor">
-      Create a new price tracker
-        <form method="post" action="/events/{{ event.external_id }}/monitors" class="navbar-form pull-right" />
-          <input type="tel" class="input-medium search-query" name="phone_number" placeholder="e.g. +12223334444" />
-          {% if errors.phone_number %}
-            {{ errors.phone_number }}
-          {% endif %}
-          $<input type="number" name="amount" min="0" max="9999">
-          {% if errors.amount %}
-            {{ errors.amount }}
-          {% endif %}
-          <input type="submit" class="btn" value="Create Tracker" />
-        </form>
+      <h2>Create a new price tracker</h2>
+      <form method="post" action="/events/{{ event.external_id }}/monitors" />
+        <div class="row">
+          <div class="col-md-2">
+            <p>Phone Number</p>
+         </div>
+          <div class="col-md-2">
+            <input type="tel" class="input-medium search-query" name="phone_number" placeholder="e.g. 222-333-4444" />
+            {% if errors.phone_number %}
+              {{ errors.phone_number }}
+            {% endif %}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-2">
+            <p>Amount</p>
+          </div>
+          <div class="col-md-2">
+            $<input type="number" name="amount" min="0" max="9999">
+            {% if errors.amount %}
+              {{ errors.amount }}
+            {% endif %}
+          </div>
+        </div>
+        <input type="submit" class="btn btn-primary" value="Create Tracker" />
+      </form>
     </div>
   {% endif %}
 

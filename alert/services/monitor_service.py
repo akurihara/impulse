@@ -29,7 +29,7 @@ def create_monitor_for_event(event, phone_number, amount):
         event=event
     )
 
-    _update_monitor_with_external_id(monitor)
+    monitor = _update_monitor_with_external_id(monitor)
 
     MonitorStatus.objects.create(
         monitor=monitor,
@@ -44,6 +44,8 @@ def create_monitor_for_event(event, phone_number, amount):
 def _update_monitor_with_external_id(monitor):
     monitor.external_id = generate_external_id(monitor.id)
     monitor.save()
+
+    return monitor
 
 
 def _send_monitor_confirmation_message(monitor, event):
