@@ -1,4 +1,4 @@
-from django.test import Client, TestCase
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
 from impulse.alert.constants import (
@@ -10,6 +10,7 @@ from impulse.alert.constants import (
 from test import factories
 
 
+@override_settings(DEBUG=True)
 class IncomingSMSMessageViewTest(TestCase):
 
     ENDPOINT = reverse('incoming-sms-message')
