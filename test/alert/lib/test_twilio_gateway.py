@@ -1,7 +1,7 @@
 from django.test import TestCase
 from twilio.twiml import Response
 
-from alert.lib.twilio_gateway import create_twiml_response, send_sms_message
+from impulse.alert.lib.twilio_gateway import create_twiml_response, send_sms_message
 from test.factories import VALID_PHONE_NUMBER
 
 

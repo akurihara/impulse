@@ -1,13 +1,13 @@
 from django.db.models import Max
 
-from alert.constants import (
+from impulse.alert.constants import (
     MONITOR_STATUSES,
     MONITOR_STATUS_ACTIVATED,
     MONITOR_STATUS_CREATED,
     OUTGOING_MESSAGE_MONITOR_CONFIRMATION
 )
-from alert.lib.twilio_gateway import send_sms_message
-from alert.models import Monitor, MonitorStatus
+from impulse.alert.lib.twilio_gateway import send_sms_message
+from impulse.alert.models import Monitor, MonitorStatus
 from impulse.utils import generate_external_id
 
 __all__ = [

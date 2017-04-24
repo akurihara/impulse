@@ -7,8 +7,8 @@ from django.test import TestCase
 from django.utils import timezone
 from freezegun import freeze_time
 
-from event.models import Event, VENDOR_TYPE_SEATGEEK, Venue
-from event.services import event_service
+from impulse.event.models import Event, VENDOR_TYPE_SEATGEEK, Venue
+from impulse.event.services import event_service
 from test import factories, fixtures
 
 
@@ -119,7 +119,7 @@ class FindOrCreateUpcomingEventsMatchingQueryTest(TestCase):
     def test_creates_event_if_event_does_not_exist_with_seatgeek_event_id(self):
         mock_seatgeek_event = factories.create_seatgeek_event()
 
-        with patch('event.services.event_service.search_upcoming_events', return_value=[mock_seatgeek_event]):
+        with patch('impulse.event.services.event_service.search_upcoming_events', return_value=[mock_seatgeek_event]):
             upcoming_events = event_service.find_or_create_upcoming_events_matching_query('query')
 
         self.assertEqual(1, len(upcoming_events))
@@ -129,7 +129,7 @@ class FindOrCreateUpcomingEventsMatchingQueryTest(TestCase):
         event = factories.create_event()
         mock_seatgeek_event = factories.create_seatgeek_event()
 
-        with patch('event.services.event_service.search_upcoming_events', return_value=[mock_seatgeek_event]):
+        with patch('impulse.event.services.event_service.search_upcoming_events', return_value=[mock_seatgeek_event]):
             upcoming_events = event_service.find_or_create_upcoming_events_matching_query('query')
 
         self.assertEqual(1, len(upcoming_events))

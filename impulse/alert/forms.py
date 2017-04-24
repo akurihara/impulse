@@ -7,8 +7,8 @@ from phonenumbers import (
     PhoneNumberFormat
 )
 
-from alert.services import monitor_service
-from event.models import Event
+from impulse.alert.services import monitor_service
+from impulse.event.models import Event
 
 
 class MonitorForm(forms.Form):

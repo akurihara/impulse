@@ -2,16 +2,16 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import Context, loader
 from django.views import View
 
-from alert.constants import (
+from impulse.alert.constants import (
     INCOMING_MESSAGE_ACTIVATE_MONITOR,
     MONITOR_STATUS_ACTIVATED,
     MONITOR_STATUS_DEACTIVATED,
     VALID_INCOMING_MESSAGES
 )
-from alert.forms import MonitorForm
-from alert.lib.twilio_gateway import create_twiml_response
-from alert.services import monitor_service
-from event.models import Event
+from impulse.alert.forms import MonitorForm
+from impulse.alert.lib.twilio_gateway import create_twiml_response
+from impulse.alert.services import monitor_service
+from impulse.event.models import Event
 
 
 class CreateMonitorView(View):

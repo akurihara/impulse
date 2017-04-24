@@ -1,7 +1,7 @@
 from django.test import Client, TestCase
 from django.urls import reverse
 
-from alert.constants import (
+from impulse.alert.constants import (
     INCOMING_MESSAGE_ACTIVATE_MONITOR,
     INCOMING_MESSAGE_DEACTIVATE_MONITOR,
     MONITOR_STATUS_ACTIVATED,

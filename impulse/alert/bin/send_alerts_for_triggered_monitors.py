@@ -1,15 +1,15 @@
 import django
 django.setup()
 
-from alert.constants import (
+from impulse.alert.constants import (
     MONITOR_STATUS_ACTIVATED,
     MONITOR_STATUS_DEACTIVATED,
     OUTGOING_MESSAGE_MONITOR_TRIGGERED
 )
-from alert.lib.twilio_gateway import send_sms_message
-from alert.services import monitor_service
-from event.lib.seatgeek_gateway import get_event_by_id
-from event.services import event_service
+from impulse.alert.lib.twilio_gateway import send_sms_message
+from impulse.alert.services import monitor_service
+from impulse.event.lib.seatgeek_gateway import get_event_by_id
+from impulse.event.services import event_service
 
 
 def main():

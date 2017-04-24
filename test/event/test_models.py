@@ -2,8 +2,8 @@ from decimal import Decimal
 
 from django.test import TestCase
 
-from event.models import EventPrice
-from event.services import event_service
+from impulse.event.models import EventPrice
+from impulse.event.services import event_service
 from test import factories
 
 

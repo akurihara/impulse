@@ -14,7 +14,7 @@
   {% if monitor %}
     <div class="monitor-details">
       <h2>You're tracking this event</h2>
-      <p>An alert will be sent to {{ monitor.phone_number }} when the price drops below ${{ monitor.amount }}.</p>
+      <p>An alert will be sent to {{ monitor.phone_number }} if the price drops below ${{ monitor.amount }}.</p>
     </div>
   {% else %}
     <div class="create-monitor">

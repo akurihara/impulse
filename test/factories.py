@@ -2,10 +2,10 @@ from __future__ import absolute_import
 
 from decimal import Decimal
 
-from alert.services import monitor_service
-from event.lib.seatgeek_gateway import SeatGeekEvent, SeatGeekVenue
-from event.models import Venue
-from event.services import event_service
+from impulse.alert.services import monitor_service
+from impulse.event.lib.seatgeek_gateway import SeatGeekEvent, SeatGeekVenue
+from impulse.event.models import Venue
+from impulse.event.services import event_service
 from test.fixtures import PURITY_RING_EVENT, PURITY_RING_SEATGEEK_EVENT, TERMINAL_5_VENUE, TERMINAL_5_SEATGEEK_VENUE
 
 VALID_PHONE_NUMBER = '+15005550006'

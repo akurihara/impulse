@@ -3,8 +3,8 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin
 from django.views.generic import RedirectView
 
-from alert.views import CreateMonitorView, IncomingSMSMessageView
-from event.views import EventDetailView, EventSearchView
+from impulse.alert.views import CreateMonitorView, IncomingSMSMessageView
+from impulse.event.views import EventDetailView, EventSearchView
 
 
 urlpatterns = [

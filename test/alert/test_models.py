@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from alert.models import MonitorStatus
+from impulse.alert.models import MonitorStatus
 from test import factories
 
 

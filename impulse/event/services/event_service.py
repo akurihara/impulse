@@ -2,8 +2,8 @@ from datetime import timedelta
 
 from django.utils import timezone
 
-from event.lib.seatgeek_gateway import search_upcoming_events
-from event.models import Event, EventPrice, VENDOR_TYPE_SEATGEEK, Venue
+from impulse.event.lib.seatgeek_gateway import search_upcoming_events
+from impulse.event.models import Event, EventPrice, VENDOR_TYPE_SEATGEEK, Venue
 from impulse.utils import generate_external_id
 
 __all__ = [

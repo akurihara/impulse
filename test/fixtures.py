@@ -4,7 +4,7 @@ from datetime import datetime
 from decimal import Decimal
 import pytz
 
-from event.models import VENDOR_TYPE_SEATGEEK
+from impulse.event.models import VENDOR_TYPE_SEATGEEK
 
 PURITY_RING_EVENT_URL = 'https://seatgeek.com/purity-ring-21-tickets/brooklyn-new-york-output-2017-01-19-10-pm/concert/3621831'
 

@@ -3,14 +3,14 @@ from mock import patch
 
 from django.test import TestCase
 
-from alert.constants import (
+from impulse.alert.constants import (
     MONITOR_STATUS_ACTIVATED,
     MONITOR_STATUS_CREATED,
     MONITOR_STATUS_DEACTIVATED,
     OUTGOING_MESSAGE_MONITOR_CONFIRMATION
 )
-from alert.models import Monitor
-from alert.services import monitor_service
+from impulse.alert.models import Monitor
+from impulse.alert.services import monitor_service
 from test import factories
 
 
@@ -43,7 +43,7 @@ class CreateMonitorForEventTest(TestCase):
         self.assertEqual(1, monitor.statuses.count())
         self.assertEqual(MONITOR_STATUS_CREATED, monitor.current_status.status)
 
-    @patch('alert.services.monitor_service.send_sms_message')
+    @patch('impulse.alert.services.monitor_service.send_sms_message')
     def test_sends_monitor_confirmation_message(self, send_sms_message_mock):
         event = factories.create_event()
 

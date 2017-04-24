@@ -2,9 +2,9 @@ from django.http import HttpResponse
 from django.template import Context, loader
 from django.views import View
 
-from alert.models import Monitor
-from event.models import Event
-from event.services import event_service
+from impulse.alert.models import Monitor
+from impulse.event.models import Event
+from impulse.event.services import event_service
 
 
 class EventDetailView(View):
