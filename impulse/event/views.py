@@ -1,5 +1,5 @@
-from django.http import HttpResponse
-from django.template import Context, loader
+from django.shortcuts import render
+from django.template import Context
 from django.views import View
 
 from impulse.alert.models import Monitor
@@ -10,7 +10,6 @@ from impulse.event.services import event_service
 class EventDetailView(View):
 
     def get(self, request, event_external_id, monitor_external_id=None):
-        template = loader.get_template('event/event_detail.html')
         event = Event.objects.get(external_id=event_external_id)
         if monitor_external_id:
             monitor = Monitor.objects.get(external_id=monitor_external_id)
@@ -19,7 +18,7 @@ class EventDetailView(View):
 
         context = Context({'event': event, 'monitor': monitor})
 
-        return HttpResponse(template.render(context))
+        return render(request, 'event/event_detail.html', context)
 
 
 class EventSearchView(View):
@@ -31,7 +30,6 @@ class EventSearchView(View):
         else:
             events = None
 
-        template = loader.get_template('event/event_search.html')
         context = Context({'query': query, 'events': events})
 
-        return HttpResponse(template.render(context))
+        return render(request, 'event/event_search.html', context)

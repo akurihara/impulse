@@ -1,5 +1,5 @@
 from django.http import HttpResponse, HttpResponseRedirect
-from django.template import Context, loader
+from django.template import loader, RequestContext
 from django.views import View
 
 from impulse.alert.constants import (
@@ -30,14 +30,17 @@ class CreateMonitorView(View):
             monitor = form.save()
 
             redirect_url = '/events/{event_external_id}/monitors/{monitor_external_id}'.format(
-                event_id=monitor.event.external_id,
-                monitor_id=monitor.external_id
+                event_external_id=monitor.event.external_id,
+                monitor_external_id=monitor.external_id
             )
 
             http_response = HttpResponseRedirect(redirect_url)
         else:
             template = loader.get_template('event/event_detail.html')
-            context = Context({'event': event, 'errors': form.errors})
+            context = RequestContext(
+                request=request,
+                dict_={'event': event, 'errors': form.errors}
+            )
 
             http_response = HttpResponse(template.render(context))
 

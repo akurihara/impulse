@@ -20,6 +20,7 @@
     <div class="create-monitor">
       <h2>Create a new price tracker</h2>
       <form method="post" action="/events/{{ event.external_id }}/monitors" />
+        {% csrf_token %}
         <div class="row">
           <div class="col-md-2">
             <p>Phone Number</p>
