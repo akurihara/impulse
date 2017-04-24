@@ -38,8 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'phonenumber_field',
     'django.contrib.staticfiles',
+    'django_twilio',
+    'phonenumber_field',
 ]
 
 MIDDLEWARE = [

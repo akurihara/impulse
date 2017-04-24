@@ -1,6 +1,8 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader, RequestContext
+from django.utils.decorators import method_decorator
 from django.views import View
+from django_twilio.decorators import twilio_view
 
 from impulse.alert.constants import (
     INCOMING_MESSAGE_ACTIVATE_MONITOR,
@@ -48,6 +50,10 @@ class CreateMonitorView(View):
 
 
 class IncomingSMSMessageView(View):
+
+    @method_decorator(twilio_view)
+    def dispatch(self, request, *args, **kwargs):
+        return super(IncomingSMSMessageView, self).dispatch(request, *args, **kwargs)
 
     def post(self, request):
         phone_number = request.POST['From']
