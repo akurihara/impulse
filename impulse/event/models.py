@@ -54,9 +54,9 @@ class Venue(models.Model):
         get_latest_by = 'id'
 
     name = models.CharField(max_length=255)
-    city = models.CharField(max_length=255)
-    state = models.CharField(max_length=255)
-    country = models.CharField(max_length=255)
+    city = models.CharField(max_length=255, null=True)
+    state = models.CharField(max_length=255, null=True)
+    country = models.CharField(max_length=255, null=True)
     vendor_id = models.CharField(max_length=10)
     vendor_type = models.PositiveSmallIntegerField(choices=VENDOR_TYPES.items())
 
