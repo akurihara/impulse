@@ -55,8 +55,8 @@ class Venue(models.Model):
 
     name = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
-    state = models.CharField(max_length=2)
-    country = models.CharField(max_length=2)
+    state = models.CharField(max_length=255)
+    country = models.CharField(max_length=255)
     vendor_id = models.CharField(max_length=10)
     vendor_type = models.PositiveSmallIntegerField(choices=VENDOR_TYPES.items())
 

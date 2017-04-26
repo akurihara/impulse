@@ -16,8 +16,7 @@ class SendSMSMessageTest(TestCase):
             message=message
         )
 
-        expected_message = 'Sent from your Twilio trial account - {}'.format(message)
-        self.assertEqual(expected_message, twilio_message.body)
+        self.assertEqual(message, twilio_message.body)
         self.assertEqual(phone_number, twilio_message.to)
         self.assertEqual('queued', twilio_message.status)
 
