@@ -32,6 +32,15 @@ class Event(models.Model):
     def current_price(self):
         return self.prices.latest()
 
+    @property
+    def display_title(self):
+        if len(self.title) > 40:
+            display_title = self.title[:40] + '...'
+        else:
+            display_title = self.title
+
+        return display_title
+
 
 class EventPrice(models.Model):
 
