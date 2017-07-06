@@ -15,7 +15,15 @@ SEATGEEK_CLIENT_SECRET = os.environ.get('SEATGEEK_CLIENT_SECRET')
 
 SeatGeekEvent = namedtuple(
     'SeatGeekEvent',
-    ['id', 'title', 'datetime_utc', 'lowest_price', 'url', 'venue']
+    [
+        'id',
+        'title',
+        'datetime_utc',
+        'datetime_local',
+        'lowest_price',
+        'url',
+        'venue'
+    ]
 )
 
 SeatGeekVenue = namedtuple(
@@ -30,24 +38,28 @@ def get_event_by_id(event_id):
         event_id=event_id
     )
     response = requests.get(url, auth=(SEATGEEK_CLIENT_ID, SEATGEEK_CLIENT_SECRET))
-    event_data = json.loads(response.text)
 
     if response.status_code != 200:
         _handle_error_response(response)
+
+    event_data = json.loads(response.text)
 
     return _get_seatgeek_event_tuple_from_event_data(event_data)
 
 
 def _get_seatgeek_event_tuple_from_event_data(event_data):
     datetime_utc = datetime.datetime.strptime(event_data['datetime_utc'], SEATGEEK_DATETIME_FORMAT)
-    localized_datetime_utc = pytz.utc.localize(datetime_utc)
+    datetime_utc_with_timezone = pytz.utc.localize(datetime_utc)
+    datetime_local = datetime.datetime.strptime(event_data['datetime_local'], SEATGEEK_DATETIME_FORMAT)
+    datetime_local_with_timezone = pytz.utc.localize(datetime_local)
     lowest_price = _get_lowest_price_from_event_data(event_data)
     seatgeek_venue = _get_seatgeek_venue_from_seatgeek_event(event_data)
 
     return SeatGeekEvent(
         id=event_data['id'],
         title=event_data['short_title'],
-        datetime_utc=localized_datetime_utc,
+        datetime_utc=datetime_utc_with_timezone,
+        datetime_local=datetime_local_with_timezone,
         lowest_price=lowest_price,
         url=event_data['url'],
         venue=seatgeek_venue

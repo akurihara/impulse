@@ -10,6 +10,7 @@ PURITY_RING_EVENT_URL = 'https://seatgeek.com/purity-ring-21-tickets/brooklyn-ne
 
 PURITY_RING_EVENT = {
     'datetime_start': datetime(2017, 1, 20, 3, 0, tzinfo=pytz.utc),
+    'datetime_start_local': datetime(2017, 1, 19, 22, 0, tzinfo=pytz.utc),
     'price': Decimal('65'),
     'url': PURITY_RING_EVENT_URL,
     'title': 'Purity Ring',
@@ -37,6 +38,7 @@ TERMINAL_5_SEATGEEK_VENUE = {
 
 PURITY_RING_SEATGEEK_EVENT = {
     'id': '3621831',
+    'datetime_local': datetime(2017, 1, 19, 22, 0, tzinfo=pytz.utc),
     'datetime_utc': datetime(2017, 1, 20, 3, 0, tzinfo=pytz.utc),
     'lowest_price': Decimal('65'),
     'title': 'Purity Ring',

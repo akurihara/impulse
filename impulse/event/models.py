@@ -13,6 +13,7 @@ VENDOR_TYPES = {
 class Event(models.Model):
     external_id = models.CharField(db_index=True, max_length=10)
     datetime_start = models.DateTimeField()
+    datetime_start_local = models.DateTimeField()
     title = models.CharField(max_length=255)
     url = models.URLField(max_length=255)
     vendor_id = models.CharField(max_length=10)

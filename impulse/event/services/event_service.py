@@ -14,9 +14,10 @@ __all__ = [
 ]
 
 
-def create_event(vendor_id, vendor_type, title, datetime_start, price, url, venue):
+def create_event(vendor_id, vendor_type, title, datetime_start, datetime_start_local, price, url, venue):
     event = Event.objects.create(
         datetime_start=datetime_start,
+        datetime_start_local=datetime_start_local,
         title=title,
         url=url,
         vendor_id=vendor_id,
@@ -73,6 +74,7 @@ def _find_or_create_event(seatgeek_event):
             vendor_type=VENDOR_TYPE_SEATGEEK,
             title=seatgeek_event.title,
             datetime_start=seatgeek_event.datetime_utc,
+            datetime_start_local=seatgeek_event.datetime_local,
             price=seatgeek_event.lowest_price,
             url=seatgeek_event.url,
             venue=venue

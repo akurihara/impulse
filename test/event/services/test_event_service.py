@@ -21,6 +21,7 @@ class CreateEventTest(TestCase):
             vendor_type=VENDOR_TYPE_SEATGEEK,
             title='Purity Ring',
             datetime_start=datetime(2017, 1, 20, 3, 0, tzinfo=pytz.utc),
+            datetime_start_local=datetime(2017, 1, 19, 22, 0, tzinfo=pytz.utc),
             price=Decimal('65'),
             url=fixtures.PURITY_RING_EVENT_URL,
             venue=venue
@@ -42,6 +43,7 @@ class CreateEventTest(TestCase):
             vendor_type=VENDOR_TYPE_SEATGEEK,
             title='Purity Ring',
             datetime_start=datetime(2017, 1, 20, 3, 0, tzinfo=pytz.utc),
+            datetime_start_local=datetime(2017, 1, 19, 22, 0, tzinfo=pytz.utc),
             price=Decimal('65'),
             url='https://seatgeek.com/purity-ring-21-tickets/brooklyn-new-york-output-2017-01-19-10-pm/concert/3621831',
             venue=venue
@@ -57,6 +59,7 @@ class CreateEventTest(TestCase):
             vendor_type=VENDOR_TYPE_SEATGEEK,
             title='Purity Ring',
             datetime_start=datetime(2017, 1, 20, 3, 0, tzinfo=pytz.utc),
+            datetime_start_local=datetime(2017, 1, 19, 22, 0, tzinfo=pytz.utc),
             price=None,
             url='https://seatgeek.com/purity-ring-21-tickets/brooklyn-new-york-output-2017-01-19-10-pm/concert/3621831',
             venue=venue
