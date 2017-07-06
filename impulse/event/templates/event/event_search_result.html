@@ -11,7 +11,7 @@
       <p>{{ event.venue.name }}, {{event.venue.city }}, {{ event.venue.state }}</p>
     </div>
     <div class="col-md-4 col-lg-2">
-      <p>{{ event.datetime_start }}</p>
+      <p>{{ event.formatted_datetime_start }}</p>
     </div>
     <div class="col-md-4 col-lg-2">
       {% if event.current_price.price %}

@@ -42,6 +42,10 @@ class Event(models.Model):
 
         return display_title
 
+    @property
+    def formatted_datetime_start(self):
+        return self.datetime_start_local.strftime('%A, %B%e at %-I:%M %p')
+
 
 class EventPrice(models.Model):
 
