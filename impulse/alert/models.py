@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Max
 from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -19,6 +20,14 @@ class Monitor(models.Model):
 
     def get_absolute_url(self):
         return reverse('monitor-detail', kwargs={'pk': self.id})
+
+    @classmethod
+    def filter_statuses(cls, statuses):
+        return cls.objects.annotate(
+            most_recent_status=Max('statuses__status')
+        ).filter(
+            most_recent_status__in=statuses
+        )
 
     @property
     def current_status(self):
