@@ -4,6 +4,7 @@ from django.test import TestCase
 from freezegun import freeze_time
 
 from impulse.alert.constants import (
+    MONITOR_STATUS_CREATED,
     MONITOR_STATUS_ACTIVATED,
     MONITOR_STATUS_DEACTIVATED,
     OUTGOING_MESSAGE_MONITOR_TRIGGERED
@@ -82,6 +83,32 @@ class MainTest(TestCase):
             event=event,
             amount=Decimal('65.01'),
             status=MONITOR_STATUS_ACTIVATED
+        )
+
+        main()
+
+        self.assertEqual(MONITOR_STATUS_DEACTIVATED, monitor.current_status.status)
+
+    @freeze_time('2017-01-20 2:01')
+    def test_deactivates_activated_monitor_of_event_starting_in_next_hour(self, _):
+        event = factories.create_event()
+        monitor = factories.create_monitor_for_event(
+            event=event,
+            amount=Decimal('64.99'),
+            status=MONITOR_STATUS_ACTIVATED
+        )
+
+        main()
+
+        self.assertEqual(MONITOR_STATUS_DEACTIVATED, monitor.current_status.status)
+
+    @freeze_time('2017-01-20 2:01')
+    def test_deactivates_created_monitor_of_event_starting_in_next_hour(self, _):
+        event = factories.create_event()
+        monitor = factories.create_monitor_for_event(
+            event=event,
+            amount=Decimal('64.99'),
+            status=MONITOR_STATUS_CREATED
         )
 
         main()

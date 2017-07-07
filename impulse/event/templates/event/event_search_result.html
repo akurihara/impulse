@@ -10,14 +10,14 @@
     <div class="col-md-4 col-lg-4">
       <p>{{ event.venue.name }}, {{event.venue.city }}, {{ event.venue.state }}</p>
     </div>
-    <div class="col-md-4 col-lg-2">
+    <div class="col-md-2 col-lg-2">
       <p>{{ event.formatted_datetime_start }}</p>
     </div>
-    <div class="col-md-4 col-lg-2">
+    <div class="col-md-2 col-lg-2">
       {% if event.current_price.price %}
-        <p>Current Price: ${{ event.current_price.price }}</p>
+        <p>Price: ${{ event.current_price.price }}</p>
       {% else %}
-        <p>No tickets currently available</p>
+        <p>Price: N/A</p>
       {% endif %}
     </div>
     <div class="col-md-4 col-lg-4">

@@ -1,5 +1,3 @@
-from django.db.models import Max
-
 from impulse.alert.constants import (
     MONITOR_STATUSES,
     MONITOR_STATUS_ACTIVATED,
@@ -71,7 +69,7 @@ def _format_event_title(title):
 
 def does_activated_or_created_monitor_exist_for_phone_number(phone_number):
     statuses = (MONITOR_STATUS_CREATED, MONITOR_STATUS_ACTIVATED)
-    activated_or_created_monitors = _get_monitors_with_current_statuses_queryset(statuses)
+    activated_or_created_monitors = Monitor.filter_statuses(statuses)
 
     return activated_or_created_monitors.filter(
         phone_number=phone_number,
@@ -82,7 +80,7 @@ def get_created_monitor_for_phone_number(phone_number):
     statuses = (MONITOR_STATUS_CREATED,)
 
     try:
-        created_monitors = _get_monitors_with_current_statuses_queryset(statuses)
+        created_monitors = Monitor.filter_statuses(statuses)
         monitor = created_monitors.get(phone_number=phone_number)
     except Monitor.DoesNotExist:
         monitor = None
@@ -94,17 +92,9 @@ def get_activated_monitor_for_phone_number(phone_number):
     statuses = (MONITOR_STATUS_ACTIVATED,)
 
     try:
-        activated_monitors = _get_monitors_with_current_statuses_queryset(statuses)
+        activated_monitors = Monitor.filter_statuses(statuses)
         monitor = activated_monitors.get(phone_number=phone_number)
     except Monitor.DoesNotExist:
         monitor = None
 
     return monitor
-
-
-def _get_monitors_with_current_statuses_queryset(statuses):
-    return Monitor.objects.annotate(
-        most_recent_status=Max('statuses__status')
-    ).filter(
-        most_recent_status__in=statuses
-    )
